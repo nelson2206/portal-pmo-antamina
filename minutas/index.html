@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minutas y Acuerdos | PMO Antamina</title>
+<meta name="description" content="Convierte transcripciones de Teams en minutas accionables con seguimiento de acuerdos. PMO Antamina.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Crect%20width=%22100%22%20height=%22100%22%20rx=%2222%22%20fill=%22%23009999%22/%3E%3Cpath%20d=%22M22%2070%20L42%2030%20L56%2056%20L66%2040%20L78%2070%20Z%22%20fill=%22%23fff%22/%3E%3C/svg%3E">
+<meta name="theme-color" content="#009999">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1">
+<script defer src="https://umami-mbc.vercel.app/script.js" data-website-id="c236585d-7823-4d53-9d58-4863f2653451"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 100 60"><path d="M6 54 L30 12 L48 42 L60 24 L94 54 Z" fill="currentColor"/></svg>
+    </span>
+    <span class="brand-txt">
+      <b>PMO Antamina</b>
+      <i>Minutas y acuerdos</i>
+    </span>
+  </a>
+  <span class="topbar-actions">
+    <a class="link-back" href="../">Volver al portal</a>
+    <button class="btn ghost" id="btnConfig">Configuración</button>
+  </span>
+</header>
+
+<section class="page-head">
+  <p class="kicker">Seguimiento de acuerdos</p>
+  <h1>De la transcripción al <strong>Status Report</strong></h1>
+  <p class="sub">Convierte la reunión de Teams en la minuta de acuerdos del proyecto, con el seguimiento de compromisos entre reuniones y el correo listo para enviar.</p>
+</section>
+
+<!-- Barra de pasos -->
+<nav class="steps" id="steps">
+  <span class="step is-active" data-step="1"><i>1</i> Transcripción</span>
+  <span class="step" data-step="2"><i>2</i> Revisar</span>
+  <span class="step" data-step="3"><i>3</i> Enviar</span>
+</nav>
+
+<main>
+  <section class="card hidden" id="panelConfig">
+    <h2>Configuración</h2>
+    <p class="hint">Esta herramienta usa Gemini para redactar la minuta. Pega tu API key de <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> — se guarda solo en este navegador, nunca sale de tu equipo salvo hacia la API de Google.</p>
+    <div class="row">
+      <div class="field grow">
+        <label for="apiKey">Gemini API key</label>
+        <input type="password" id="apiKey" placeholder="AIza... / AQ....">
+      </div>
+      <button class="btn primary" id="btnGuardarKey">Guardar</button>
+    </div>
+    <p class="hint" id="keyStatus"></p>
+    <hr class="cfg-sep">
+    <label class="cfg-lbl">Firma del correo (opcional)</label>
+    <p class="hint">Aparece al final de la minuta. Una línea por renglón (nombre, área, teléfono…).</p>
+    <div class="row">
+      <div class="field grow">
+        <textarea id="firmaInput" rows="3" placeholder="Ronald Lora Veramendi&#10;Business Consulting | Industria & Consumo&#10;T: +51 990 936 933"></textarea>
+      </div>
+      <button class="btn primary" id="btnGuardarFirma">Guardar firma</button>
+    </div>
+    <hr class="cfg-sep">
+    <label class="cfg-lbl">Respaldo de datos</label>
+    <p class="hint">Tus proyectos, tipos de reunión, acuerdos y minutas viven solo en este navegador. Descarga un respaldo para no perderlos o para moverlos a otra PC.</p>
+    <div class="row">
+      <button class="btn secondary" id="btnExport">⭳ Exportar respaldo (.json)</button>
+      <button class="btn secondary" id="btnImport">⭱ Importar respaldo</button>
+      <input type="file" id="importFile" accept="application/json,.json" style="display:none">
+    </div>
+  </section>
+
+  <section class="card" id="paso1">
+    <h2>1 · Proyecto, tipo de reunión y transcripción</h2>
+    <div class="row">
+      <div class="field grow">
+        <label for="projectSelect">Proyecto</label>
+        <select id="projectSelect"></select>
+      </div>
+      <button class="btn secondary" id="btnNuevoProyecto">+ Proyecto</button>
+    </div>
+    <div class="row">
+      <div class="field grow">
+        <label for="seriesSelect">Tipo de reunión</label>
+        <select id="seriesSelect"></select>
+      </div>
+      <button class="btn secondary" id="btnNuevaSerie">+ Tipo</button>
+      <button class="btn secondary" id="btnEditarSerie">✎ Editar</button>
+    </div>
+    <div class="recipients-hint" id="stakeholdersHint"></div>
+    <div class="continuity" id="continuidadHint"></div>
+    <div class="field">
+      <label for="transcript">Transcripción de la reunión de Teams</label>
+      <textarea id="transcript" rows="12" placeholder="Pega aquí la transcripción completa de la llamada de Teams..."></textarea>
+      <span class="counter" id="transcriptCounter">0 caracteres</span>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="btnGenerar"><span class="btn-label">Generar minuta</span></button>
+      <button class="btn secondary" id="btnHistorial">🔎 Historial y comparación</button>
+      <span id="status" class="status"></span>
+    </div>
+  </section>
+
+  <section class="card hidden" id="panelHistorial">
+    <h2>Historial y comparación</h2>
+    <div class="field">
+      <label for="histSearch">Buscar una actividad, responsable o compromiso en todas las minutas</label>
+      <input type="text" id="histSearch" placeholder="Ej: firewall, matriz de evaluación, capacitación...">
+    </div>
+    <div id="histResults" class="hist-results"></div>
+    <hr class="cfg-sep">
+    <label class="cfg-lbl" id="serieMinutasLabel">Minutas archivadas</label>
+    <div class="row" style="margin-bottom:8px">
+      <button class="btn secondary scope-on" id="scopeSerie" data-scope="serie">Este tipo de reunión</button>
+      <button class="btn secondary" id="scopeProyecto" data-scope="proyecto">Todo el proyecto</button>
+    </div>
+    <div id="serieMinutas" class="minutas-list"></div>
+    <iframe id="histPreview" class="hidden" title="Minuta archivada"></iframe>
+  </section>
+
+  <section class="card hidden" id="paso2">
+    <h2>2 · Revisar y ajustar</h2>
+    <div class="row">
+      <div class="field">
+        <label for="fechaReunion">Fecha de reunión</label>
+        <input type="date" id="fechaReunion">
+      </div>
+      <div class="field grow">
+        <label for="participantes">Participantes (separados por coma)</label>
+        <input type="text" id="participantes">
+      </div>
+      <div class="field grow">
+        <label for="proximaReunion">Próxima reunión (opcional)</label>
+        <input type="text" id="proximaReunion" placeholder="Ej: jueves 10 de julio, 9:00 a. m.">
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tablaAcuerdos">
+        <thead>
+          <tr>
+            <th>Ítem</th>
+            <th>Acción / Compromiso</th>
+            <th>Responsable</th>
+            <th>Estado</th>
+            <th>Fecha comprometida</th>
+            <th>Crítico</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button class="btn secondary" id="btnAgregarFila">+ Agregar acuerdo</button>
+
+    <div class="row actions">
+      <button class="btn primary" id="btnPreview">Vista previa y envío →</button>
+      <button class="btn secondary" id="btnGuardar">Guardar seguimiento</button>
+      <span id="status2" class="status"></span>
+    </div>
+  </section>
+
+  <section class="card hidden" id="paso3">
+    <h2>3 · Vista previa y envío</h2>
+
+    <div class="mail-head">
+      <div class="mail-field">
+        <span class="mail-label">Para</span>
+        <div class="chips-static" id="previewRecipients"></div>
+      </div>
+      <div class="mail-field">
+        <span class="mail-label">Asunto</span>
+        <span class="mail-subject" id="previewSubject"></span>
+      </div>
+    </div>
+
+    <iframe id="previewFrame" title="Vista previa del correo"></iframe>
+
+    <div class="field" id="adjuntosField">
+      <label>Adjuntos (opcional) — Excel, PDF, etc.</label>
+      <div class="row" style="margin:0">
+        <button class="btn secondary" id="btnAddAdjunto">📎 Adjuntar archivo</button>
+        <input type="file" id="adjuntoFile" multiple style="display:none">
+      </div>
+      <div class="chips-static" id="adjuntosList"></div>
+      <span class="hint">Se incluyen en el <b>.eml</b> (Outlook escritorio). En Outlook web deberás adjuntarlos a mano tras pegar la minuta.</span>
+    </div>
+
+    <div class="send-options">
+      <div class="send-card">
+        <div class="send-title">Outlook escritorio</div>
+        <p class="send-desc">Descarga un archivo <b>.eml</b> que se abre como borrador listo para enviar.</p>
+        <button class="btn primary" id="btnEml">Descargar .eml</button>
+      </div>
+      <div class="send-card">
+        <div class="send-title">Outlook web (online)</div>
+        <p class="send-desc">Copia la minuta y abre un correo nuevo ya direccionado. Solo pega con <b>Ctrl+V</b> en el cuerpo.</p>
+        <button class="btn primary" id="btnOutlookWeb">Abrir en Outlook web</button>
+      </div>
+    </div>
+    <p class="hint" id="status3"></p>
+  </section>
+</main>
+
+<footer class="footer"><div class="footer-inner"><span>PMO Antamina | Minutas y acuerdos</span><span class="sep">|</span><span>Minsait Business Consulting</span><span class="sep">|</span><span>Los datos se guardan solo en este navegador</span></div></footer>
+
+<!-- Modal de proyecto -->
+<div class="modal-overlay hidden" id="projectModal">
+  <div class="modal">
+    <h3 id="modalTitle">Nuevo proyecto</h3>
+    <div class="field" id="modalNombreField">
+      <label for="modalNombre" id="modalNombreLabel">Nombre</label>
+      <input type="text" id="modalNombre" placeholder="Ej: Despliegue Bitlocker">
+    </div>
+    <div class="field" id="chipsField">
+      <label>Correos de los interesados</label>
+      <div class="chips-input" id="chipsInput">
+        <span class="chips-list" id="chipsList"></span>
+        <input type="text" id="chipEntry" placeholder="correo@empresa.com" autocomplete="off">
+      </div>
+      <span class="hint">Escribe un correo y pulsa <b>Enter</b>, <b>coma</b> o <b>espacio</b> para añadirlo. También puedes pegar varios de una vez.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">Cancelar</button>
+      <button class="btn primary" id="modalSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>

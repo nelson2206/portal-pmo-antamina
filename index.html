@@ -1,184 +1,1732 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal PMO Antamina · Automatización</title>
-<meta name="description" content="Portal de iniciativas de automatización de la PMO de Antamina: minutas y acuerdos, reportes ejecutivos y evaluación de ofertas. Minsait Business Consulting.">
-<meta name="theme-color" content="#009999">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Crect%20width=%22100%22%20height=%22100%22%20rx=%2222%22%20fill=%22%23009999%22/%3E%3Cpath%20d=%22M22%2070%20L42%2030%20L56%2056%20L66%2040%20L78%2070%20Z%22%20fill=%22%23fff%22/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1">
-</head>
-<body>
+<style>
+  :root{
+    --bg:#F1F4EF;--surface:#FFFFFF;--surface-2:#E9EEE6;--surface-3:#F6F8F3;
+    --ink:#0F1E1C;--ink-soft:#3F514A;--muted:#69776F;--line:#D7E0D6;--line-strong:#BDC9BC;
+    --brand:#2F8B34;--brand-ink:#1E6B26;--brand-soft:#E2F0DC;--deep:#0B3A3F;--deep-2:#0F4A50;
+    --copper:#B4642E;--copper-soft:#F0DBC8;
+    --ok:#2F8B34;--ok-soft:#DCEFD7;--warn:#B67A12;--warn-soft:#F6E7C4;--crit:#B23A2E;--crit-soft:#F4D8D2;--info:#206E8C;--info-soft:#D3E7EE;
+    --sans:"Segoe UI","Helvetica Neue",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    --mono:"Cascadia Code","Cascadia Mono",Consolas,ui-monospace,monospace;
+    --shadow:0 1px 2px rgba(11,58,63,.06),0 8px 26px rgba(11,58,63,.07);
+    --shadow-lg:0 24px 60px rgba(11,58,63,.18);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#091514;--surface:#0F2321;--surface-2:#15302D;--surface-3:#0C1D1B;
+      --ink:#E9F1EA;--ink-soft:#B6C6BD;--muted:#7E9088;--line:#22403C;--line-strong:#2F5450;
+      --brand:#57BD4C;--brand-ink:#7ED073;--brand-soft:#16351F;--deep:#0B3A3F;--deep-2:#123F45;
+      --copper:#D98A54;--copper-soft:#3A2415;
+      --ok:#57BD4C;--ok-soft:#16351F;--warn:#D9A63C;--warn-soft:#3A2E10;--crit:#E0685A;--crit-soft:#3A1A15;--info:#4FA6C4;--info-soft:#0F2E38;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4);--shadow-lg:0 24px 60px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="light"]{--bg:#F1F4EF;--surface:#FFFFFF;--surface-2:#E9EEE6;--surface-3:#F6F8F3;--ink:#0F1E1C;--ink-soft:#3F514A;--muted:#69776F;--line:#D7E0D6;--line-strong:#BDC9BC;--brand:#2F8B34;--brand-ink:#1E6B26;--brand-soft:#E2F0DC;--deep:#0B3A3F;--deep-2:#0F4A50;--copper:#B4642E;--copper-soft:#F0DBC8;--ok:#2F8B34;--ok-soft:#DCEFD7;--warn:#B67A12;--warn-soft:#F6E7C4;--crit:#B23A2E;--crit-soft:#F4D8D2;--info:#206E8C;--info-soft:#D3E7EE;--shadow:0 1px 2px rgba(11,58,63,.06),0 8px 26px rgba(11,58,63,.07);}
+  :root[data-theme="dark"]{--bg:#091514;--surface:#0F2321;--surface-2:#15302D;--surface-3:#0C1D1B;--ink:#E9F1EA;--ink-soft:#B6C6BD;--muted:#7E9088;--line:#22403C;--line-strong:#2F5450;--brand:#57BD4C;--brand-ink:#7ED073;--brand-soft:#16351F;--deep:#0B3A3F;--deep-2:#123F45;--copper:#D98A54;--copper-soft:#3A2415;--ok:#57BD4C;--ok-soft:#16351F;--warn:#D9A63C;--warn-soft:#3A2E10;--crit:#E0685A;--crit-soft:#3A1A15;--info:#4FA6C4;--info-soft:#0F2E38;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4);--shadow-lg:0 24px 60px rgba(0,0,0,.55);}
 
-<header class="topbar">
-  <a class="brand" href="./">
-    <span class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 100 60"><path d="M6 54 L30 12 L48 42 L60 24 L94 54 Z" fill="currentColor"/></svg>
-    </span>
-    <span class="brand-txt">
-      <b>PMO Antamina</b>
-      <i>Automatización de procesos</i>
-    </span>
-  </a>
-  <span class="topbar-partner">Minsait <span>Business Consulting</span></span>
-</header>
+  *{box-sizing:border-box}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  .wrap{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px}
+  h1,h2,h3,h4{margin:0}
+  button{font-family:inherit}
+  .tnum{font-variant-numeric:tabular-nums}
+  .spacer{flex:1}
 
-<section class="hero">
-  <div class="hero-inner">
-    <p class="kicker">Torre de Tiempos · Superintendencia de Sistemas</p>
-    <h1>Tres iniciativas para devolverle<br><strong>horas al equipo</strong></h1>
-    <p class="lead">
-      El levantamiento de esfuerzo del equipo PMO identificó <b>372 horas al mes</b> dedicadas a tareas
-      recurrentes — el equivalente a <b>2.3 personas a tiempo completo</b>. Estas tres iniciativas
-      atacan el 90% de esa carga.
-    </p>
-    <div class="hero-stats">
-      <div class="stat"><span class="n">372</span><span class="l">horas/mes levantadas</span></div>
-      <div class="stat"><span class="n">2.3</span><span class="l">personas equivalentes</span></div>
-      <div class="stat"><span class="n">7</span><span class="l">project managers</span></div>
+  /* ---------- suite bar ---------- */
+  .appbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+  .appbar-in{display:flex;align-items:center;gap:14px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.01em;white-space:nowrap;cursor:pointer;background:none;border:none;color:var(--ink);padding:0;font-size:15px}
+  .brand .mk{width:26px;height:26px}
+  .brand small{display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left}
+  .tools{display:flex;gap:3px;margin-left:10px;overflow-x:auto}
+  .tools button{border:none;background:transparent;color:var(--ink-soft);font-size:13.5px;font-weight:600;padding:8px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px}
+  .tools button:hover{background:var(--surface-2);color:var(--ink)}
+  .tools button.active{background:var(--brand-soft);color:var(--brand-ink)}
+  .icon-btn{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:8px;width:36px;height:36px;cursor:pointer;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+  .icon-btn:hover{border-color:var(--brand)}
+  .btn{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:9px;padding:9px 15px;font-size:13.5px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{border-color:var(--brand)}
+  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn.primary:hover{background:var(--brand-ink);border-color:var(--brand-ink)}
+  .btn.sm{padding:6px 11px;font-size:12.5px}
+  .btn.danger{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,var(--line))}
+  .btn.danger:hover{background:var(--crit-soft);border-color:var(--crit)}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  main{padding:26px 0 70px}
+
+  /* ---------- shared bits ---------- */
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:650;line-height:1.5;white-space:nowrap}
+  .pill .d{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .pill.ok{background:var(--ok-soft);color:var(--brand-ink)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.crit{background:var(--crit-soft);color:var(--crit)}
+  .pill.info{background:var(--info-soft);color:var(--info)}
+  .pill.copper{background:var(--copper-soft);color:var(--copper)}
+  .pill.muted{background:var(--surface-2);color:var(--muted)}
+  .avatar{border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+  .card-h{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .card-h h3{font-size:15px}
+  .card-h .sub{color:var(--muted);font-size:12.5px}
+  .card-b{padding:18px}
+  .page-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  .page-head h2{font-size:22px;letter-spacing:-.02em}
+  .page-head .sub{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted)}
+  .empty .e-ic{font-size:34px;margin-bottom:10px}
+  .note{font-size:12px;color:var(--muted);font-style:italic}
+  .banner{background:var(--brand-soft);color:var(--brand-ink);border:1px solid color-mix(in srgb,var(--brand) 30%,var(--line));border-radius:10px;padding:10px 14px;font-size:12.5px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--deep);color:#EAF4E9;padding:11px 18px;border-radius:10px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);z-index:80;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  .scrollx{overflow-x:auto}
+
+  /* ---------- HUB landing ---------- */
+  .hero{position:relative;overflow:hidden;border-radius:18px;margin-bottom:26px;border:1px solid var(--line)}
+  .hero-bg{position:absolute;inset:0;background:
+    radial-gradient(120% 90% at 88% -10%,color-mix(in srgb,var(--brand) 30%,transparent),transparent 55%),
+    radial-gradient(90% 70% at 6% 120%,color-mix(in srgb,var(--copper) 22%,transparent),transparent 55%),
+    linear-gradient(180deg,var(--deep),var(--deep-2))}
+  .ridge{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:70px;display:block}
+  .hero-in{position:relative;z-index:2;padding:44px 34px 66px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#CFE9CC;font-weight:700;margin-bottom:16px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 30%,transparent)}
+  .hero h1{font-size:clamp(26px,4.2vw,40px);line-height:1.06;color:#F4FBF2;letter-spacing:-.025em;font-weight:750;margin-bottom:12px;max-width:18ch;text-wrap:balance}
+  .hero p{color:#D5E7D6;max-width:58ch;margin:0 0 20px;font-size:15.5px}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);color:#EAF4E9;font-size:12px;font-weight:500}
+  .chip b{color:#fff;font-weight:750}
+
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:900px){.tgrid{grid-template-columns:1fr}}
+  .tool-card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:22px;box-shadow:var(--shadow);cursor:pointer;transition:transform .14s,border-color .14s,box-shadow .14s;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--brand))}
+  .tool-card:hover{transform:translateY(-3px);border-color:var(--tc,var(--brand));box-shadow:var(--shadow-lg)}
+  .tool-card .tico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:color-mix(in srgb,var(--tc,var(--brand)) 15%,transparent);color:var(--tc,var(--brand));margin-bottom:14px}
+  .tool-card h3{font-size:17px;letter-spacing:-.01em;margin-bottom:5px}
+  .tool-card .td{color:var(--ink-soft);font-size:13.5px;flex:1;margin-bottom:14px}
+  .tool-card .tstats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .tool-card .tgo{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;color:var(--tc,var(--brand))}
+  .soon{border-style:dashed;cursor:default;opacity:.72;box-shadow:none}
+  .soon:hover{transform:none;box-shadow:none;border-color:var(--line)}
+  .soon::before{background:var(--line-strong)}
+
+  /* ---------- sub tabs ---------- */
+  .subtabs{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+  .subtabs button{border:none;background:transparent;color:var(--ink-soft);font-weight:650;font-size:13px;padding:7px 14px;border-radius:7px;cursor:pointer}
+  .subtabs button.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+  /* ---------- kpis ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  @media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
+  .kpi .n{font-size:30px;font-weight:780;letter-spacing:-.02em;line-height:1}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:7px}
+  .kpi.b .n{color:var(--brand)}.kpi.w .n{color:var(--warn)}.kpi.c .n{color:var(--copper)}.kpi.r .n{color:var(--crit)}.kpi.i .n{color:var(--info)}
+
+  /* ---------- radar ---------- */
+  .radar{display:flex;flex-direction:column;gap:10px}
+  .radar-item{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;transition:border-color .12s,transform .12s}
+  .radar-item:hover{border-color:var(--brand);transform:translateY(-1px)}
+  .radar-item.hot{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));background:color-mix(in srgb,var(--warn-soft) 35%,var(--surface))}
+  .cd{width:56px;height:56px;border-radius:12px;display:grid;place-content:center;text-align:center;background:var(--surface-3);border:1px solid var(--line)}
+  .cd .d{font-size:19px;font-weight:800;line-height:1}
+  .cd .u{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .cd.hot{background:var(--warn-soft);border-color:var(--warn)}.cd.hot .d{color:var(--warn)}
+  .cd.live{background:var(--brand-soft);border-color:var(--brand)}.cd.live .d{color:var(--brand-ink);font-size:11px}
+  .radar-main .who{font-weight:650;font-size:14px;display:flex;align-items:center;gap:8px}
+  .radar-main .meta{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .radar-main .meta b{color:var(--ink-soft);font-weight:650}
+  .radar-st{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  @media(max-width:640px){.radar-item{grid-template-columns:auto 1fr}.radar-st{grid-column:2;flex-direction:row;flex-wrap:wrap;align-items:flex-start}}
+
+  /* ---------- gantt ---------- */
+  .gantt-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .yearsel{display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px}
+  .yearsel button{border:none;background:transparent;color:var(--ink);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px}
+  .yearsel button:hover{background:var(--surface-2)}
+  .yearsel .y{font-weight:750;padding:0 6px;font-size:14px}
+  .gantt{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .gantt-inner{min-width:900px}
+  .g-months{display:grid;grid-template-columns:210px 1fr;border-bottom:1px solid var(--line);background:var(--surface-3)}
+  .g-months .lbl{padding:10px 14px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .g-months .mrow{display:grid;grid-template-columns:repeat(12,1fr)}
+  .g-months .mrow span{text-align:center;padding:10px 2px;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;border-left:1px solid var(--line)}
+  .g-months .mrow span.now{color:#fff;background:var(--copper)}
+  .g-row{display:grid;grid-template-columns:210px 1fr;border-bottom:1px solid var(--line)}
+  .g-row:last-child{border-bottom:none}
+  .g-name{padding:11px 14px;border-right:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:9px}
+  .g-name .nm{font-weight:650;font-size:13px;line-height:1.15}
+  .g-name .pf{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .g-track{position:relative;min-height:50px;background-image:repeating-linear-gradient(90deg,transparent,transparent calc(8.333% - 1px),var(--line) calc(8.333% - 1px),var(--line) 8.333%)}
+  .g-now{position:absolute;top:0;bottom:0;width:2px;background:var(--copper);z-index:3}
+  .g-now::after{content:"HOY";position:absolute;top:2px;left:3px;font-size:8px;font-weight:800;color:var(--copper);letter-spacing:.05em}
+  .g-bar{position:absolute;top:11px;height:28px;border-radius:7px;display:flex;align-items:center;gap:5px;padding:0 8px;font-size:11px;font-weight:650;color:#fff;white-space:nowrap;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.16);cursor:pointer;z-index:2}
+  .g-bar:hover{filter:brightness(1.06)}
+  .g-bar .rv{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.3);display:grid;place-items:center;font-size:8px;font-weight:800}
+  .bar-vac{background:linear-gradient(180deg,var(--brand),var(--brand-ink))}
+  .bar-des{background:linear-gradient(180deg,var(--info),#155a73)}
+  .bar-lic{background:linear-gradient(180deg,var(--copper),#8f4d22)}
+  .bar-cap{background:linear-gradient(180deg,#6a5aa8,#4a3d80)}
+  .legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:14px;font-size:12px;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:13px;height:13px;border-radius:4px;display:block}
+
+  /* ---------- table ---------- */
+  .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+  .tbl th{text-align:left;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tbody tr{cursor:pointer}
+  .tbl tbody tr:hover{background:var(--surface-3)}
+  .tbl .who{display:flex;align-items:center;gap:9px;font-weight:600}
+  .cell-mono{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+
+  /* ---------- modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(6,20,20,.55);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto}
+  .modal{background:var(--surface);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:680px;margin:auto}
+  .modal.wide{max-width:840px}
+  .modal-h{display:flex;align-items:flex-start;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);border-radius:16px 16px 0 0;z-index:2}
+  .modal-h h3{font-size:16px}
+  .modal-h .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+  .modal-b{padding:20px}
+  .modal-f{display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .modal-f .left{margin-right:auto}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;background:var(--surface-3);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--ink);font-family:inherit}
+  .field textarea{min-height:88px;resize:vertical;line-height:1.5}
+  .field .hint{font-size:11px;color:var(--muted);margin-top:5px;font-style:italic}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand)}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:560px){.fgrid,.fgrid3{grid-template-columns:1fr}}
+  .sec-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--copper);font-weight:750;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+  .sec-lbl::after{content:"";flex:1;height:1px;background:var(--line)}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.detail-grid{grid-template-columns:1fr}}
+  .kv{background:var(--surface-3);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .kv .k{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .kv .v{font-size:14px;font-weight:600;margin-top:3px;display:flex;align-items:center;gap:8px}
+  .acc-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .acc-row:last-child{border-bottom:none}
+  .acc-row .an{font-weight:600;font-size:13.5px}
+  .acc-row .ao{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+  .cyc{cursor:pointer;border:none;background:transparent;padding:0}
+  .chk-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .ring{--p:0;width:56px;height:56px;flex:0 0 auto;border-radius:50%;background:conic-gradient(var(--brand) calc(var(--p)*1%),var(--surface-2) 0);display:grid;place-items:center;position:relative}
+  .ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--surface)}
+  .ring b{position:relative;z-index:1;font-size:13px;font-weight:800}
+  .chk-cat{margin-bottom:14px}
+  .chk-cat .ct{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:750;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .chk-cat .ct .ci{width:22px;height:22px;border-radius:6px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;font-size:12px}
+  .chk-list{list-style:none;margin:0;padding:0}
+  .chk-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;font-size:13.5px;cursor:pointer}
+  .chk-list li:hover{background:var(--surface-3)}
+  .chk-box{width:18px;height:18px;flex:0 0 auto;border-radius:5px;border:2px solid var(--line-strong);margin-top:1px;display:grid;place-items:center;color:#fff;font-size:11px}
+  .chk-list li.done .chk-box{background:var(--brand);border-color:var(--brand)}
+  .chk-list li:not(.done) .chk-box{color:transparent}
+  .chk-list li.done .txt{color:var(--muted);text-decoration:line-through}
+  .chk-list li .txt{flex:1}
+  .chk-list li .tag{font-size:10px;font-family:var(--mono);color:var(--muted);padding-top:2px}
+
+  /* ---------- consultores ---------- */
+  .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.cgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.cgrid{grid-template-columns:1fr}}
+  .ccard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .ccard .top{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .ccard .top .nm{font-weight:700;font-size:14.5px}
+  .ccard .top .pf{font-size:12px;color:var(--muted)}
+  .pbar{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin:8px 0 5px}
+  .pbar i{display:block;height:100%;border-radius:5px;background:var(--brand)}
+  .ccard .saldo{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .ccard .saldo b{color:var(--ink)}
+
+  /* ---------- MINUTAS ---------- */
+  .mgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:860px){.mgrid{grid-template-columns:1fr}}
+  .mcard{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:17px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .12s,transform .12s}
+  .mcard:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .mcard .mt{font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:4px}
+  .mcard .mm{font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:11px}
+  .mcard .mfoot{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .acta{background:var(--surface-3);border:1px solid var(--line);border-radius:11px;padding:20px}
+  .acta h4{font-size:15px;margin-bottom:3px}
+  .acta .ah{border-bottom:2px solid var(--brand);padding-bottom:11px;margin-bottom:14px}
+  .acta .as{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--copper);font-weight:750;margin:16px 0 7px}
+  .acta ul,.acta ol{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft)}
+  .acta li{margin-bottom:5px}
+  .acta .meta-row{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .acta .meta-row b{color:var(--ink-soft)}
+  .cmp{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .cmp:last-child{border-bottom:none}
+  .cmp .cd2{flex:1}
+  .cmp .cmeta{font-size:11.5px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+
+  /* ---------- ASISTENTE ---------- */
+  .chat-wrap{display:grid;grid-template-columns:1fr 260px;gap:16px}
+  @media(max-width:900px){.chat-wrap{grid-template-columns:1fr}}
+  .chat{background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);display:flex;flex-direction:column;height:600px}
+  .chat-log{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .msg{display:flex;gap:10px;max-width:88%}
+  .msg .mav{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;flex:0 0 auto}
+  .msg.bot .mav{background:var(--brand-soft);color:var(--brand-ink)}
+  .msg.user{align-self:flex-end;flex-direction:row-reverse}
+  .msg.user .mav{background:var(--deep);color:#EAF4E9}
+  .bubble{background:var(--surface-3);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55}
+  .msg.user .bubble{background:var(--brand);border-color:var(--brand);color:#fff}
+  .bubble p{margin:0 0 8px}
+  .bubble p:last-child{margin:0}
+  .bubble b{font-weight:700}
+  .bubble ul{margin:6px 0 0;padding-left:17px}
+  .bubble li{margin-bottom:5px}
+  .bubble .prow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .bubble .prow:last-child{border-bottom:none}
+  .bubble .pn{font-weight:650;flex:1}
+  .bubble .mini{font-size:11.5px;color:var(--muted)}
+  .chat-in{border-top:1px solid var(--line);padding:12px;display:flex;gap:9px}
+  .chat-in input{flex:1;background:var(--surface-3);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--ink);font-family:inherit}
+  .chat-in input:focus{border-color:var(--brand)}
+  .sug{display:flex;flex-direction:column;gap:8px}
+  .sug .st{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:750;margin-bottom:2px}
+  .sug button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;font-weight:500}
+  .sug button:hover{border-color:var(--brand);color:var(--brand-ink);background:var(--brand-soft)}
+  .sem{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .sem.verde{background:var(--ok)}.sem.ambar{background:var(--warn)}.sem.rojo{background:var(--crit)}
+  .typing{display:inline-flex;gap:4px;align-items:center;color:var(--muted);font-style:italic}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);display:inline-block;animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .warnbar{background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px}
+  .aihint{font-size:11.5px;color:var(--muted);margin-top:5px;font-style:italic}
+  .trans-txt{background:var(--surface-3);border:1px solid var(--line);border-radius:10px;padding:14px;
+    font-size:13.5px;line-height:1.65;white-space:pre-wrap;max-height:340px;overflow-y:auto;color:var(--ink-soft)}
+  .src{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);
+    border-radius:9px;background:var(--surface);font-size:12px;margin-top:6px}
+  .src .sn{width:19px;height:19px;flex:0 0 auto;border-radius:5px;background:var(--copper-soft);
+    color:var(--copper);display:grid;place-items:center;font-weight:800;font-size:10.5px}
+  .src .st2{font-weight:650;color:var(--ink)}
+  .src .sx{color:var(--muted);font-size:11.5px;margin-top:2px}
+  .src mark{background:var(--warn-soft);color:var(--ink);padding:0 2px;border-radius:3px}
+  .fuentes-lbl{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    font-weight:750;margin-top:12px}
+  .dbchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;
+    padding:4px 10px;border-radius:999px;background:var(--info-soft);color:var(--info)}
+  .hitrow{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);
+    border-radius:11px;background:var(--surface);margin-bottom:8px;cursor:pointer}
+  .hitrow:hover{border-color:var(--brand)}
+  .hitrow .ht{font-weight:650;font-size:13.5px}
+  .hitrow .hx{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+  .hitrow .hm{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:4px}
+</style>
+
+<div class="wrap">
+  <div class="appbar">
+    <div class="container appbar-in">
+      <button class="brand" data-tool="hub" title="Ir al inicio">
+        <svg class="mk" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M2 27 L11 9 L16 18 L21 6 L30 27 Z" fill="var(--brand)"/>
+          <path d="M11 9 L16 18 L13 24 L6 24 Z" fill="var(--deep)" opacity=".55"/>
+          <circle cx="21" cy="6" r="2.4" fill="var(--copper)"/>
+        </svg>
+        <div>Suite<span style="color:var(--brand)">·</span>PMO<small>Antamina</small></div>
+      </button>
+      <nav class="tools" id="tools"></nav>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="btnReset" title="Restaurar datos de ejemplo" aria-label="Restaurar datos de ejemplo">↺</button>
+      <button class="icon-btn" id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
   </div>
-  <div class="hero-wave" aria-hidden="true">
-    <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,80 L0,40 C240,80 480,0 720,24 C960,48 1200,72 1440,32 L1440,80 Z" fill="#ffffff"/></svg>
-  </div>
-</section>
+  <main><div class="container" id="view"></div></main>
+</div>
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
 
-<main>
-  <section class="section">
-    <div class="section-head">
-      <h2>Las tres iniciativas</h2>
-      <p>Ordenadas por las horas que liberan al mes, según la Torre de Tiempos.</p>
-    </div>
+<script>
+(function(){
+"use strict";
 
-    <div class="cards">
+/* ============ utilities ============ */
+var MES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+var MESL=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function pd(s){var p=String(s).split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function fmt(s){if(!s)return"—";var d=pd(s);return d.getDate()+" "+MES[d.getMonth()];}
+function fmtL(s){var d=pd(s);return d.getDate()+" de "+MESL[d.getMonth()]+" de "+d.getFullYear();}
+function diasEntre(a,b){return Math.round((b-a)/86400000);}
+function diasHab(s,e){var a=pd(s),b=pd(e),n=0;for(var d=new Date(a);d<=b;d.setDate(d.getDate()+1)){var w=d.getDay();if(w!==0&&w!==6)n++;}return n;}
+function esc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function uid(p){return p+"-"+Math.random().toString(36).slice(2,8);}
+function dim(y,m){return new Date(y,m+1,0).getDate();}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");}
+function lines(t){return String(t||"").split("\n").map(function(x){return x.trim();}).filter(Boolean);}
 
-      <article class="card soon">
-        <div class="card-top">
-          <span class="card-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 15v-4M12 15V8M17 15v-6"/>
-            </svg>
-          </span>
-          <span class="badge badge-soon">En diseño</span>
-        </div>
-        <h3>Reportes y presentaciones</h3>
-        <p class="card-desc">
-          Genera el weekly, las PPT de seguimiento, el Project Charter y las vistas del dashboard
-          a partir de la información que ya existe en Excel y Power BI.
-        </p>
-        <ul class="card-list">
-          <li>Reporte semanal de avance</li>
-          <li>PPT ejecutivas y de portafolio</li>
-          <li>PDF del dashboard Power BI</li>
-        </ul>
-        <div class="card-foot">
-          <span class="hours"><b>143</b> h/mes</span>
-          <span class="cta-off">Próximamente</span>
-        </div>
-      </article>
+var TIPOS={
+  vacaciones:{label:"Vacaciones",bar:"bar-vac",pill:"ok",abbr:"Vac"},
+  descanso:{label:"Descanso programado",bar:"bar-des",pill:"info",abbr:"Desc"},
+  licencia:{label:"Licencia",bar:"bar-lic",pill:"copper",abbr:"Lic"},
+  capacitacion:{label:"Capacitación / viaje",bar:"bar-cap",pill:"muted",abbr:"Cap"}
+};
+var SEM={verde:{pill:"ok",label:"En verde"},ambar:{pill:"warn",label:"En ámbar"},rojo:{pill:"crit",label:"En rojo"}};
 
-      <article class="card soon">
-        <div class="card-top">
-          <span class="card-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3v18M5 7h14M7 7l-3 6h6zM17 7l-3 6h6z"/>
-            </svg>
-          </span>
-          <span class="badge badge-soon">En diseño</span>
-        </div>
-        <h3>Evaluación de ofertas</h3>
-        <p class="card-desc">
-          Contrasta las bases técnicas de la licitación con cada propuesta y arma la matriz de
-          evaluación de postores con el sustento de cada criterio.
-        </p>
-        <ul class="card-list">
-          <li>Revisión preliminar de ofertas técnicas</li>
-          <li>Matriz de evaluación de postores</li>
-          <li>Documentos de alcance con base histórica</li>
-        </ul>
-        <div class="card-foot">
-          <span class="hours"><b>100</b> h/mes</span>
-          <span class="cta-off">Próximamente</span>
-        </div>
-      </article>
+/* ============ templates ============ */
+var CHK_TPL=[
+  {cat:"Accesos y credenciales",ico:"🔑",items:[
+    {txt:"Accesos a sistemas transferidos y verificados por el relevo",tag:"ACC-01"},
+    {txt:"Credencial de acceso a sitio / campamento vigente",tag:"ACC-02"},
+    {txt:"Inducción SSOMA vigente y EPP asignado",tag:"ACC-03"}]},
+  {cat:"Contexto del portafolio",ico:"📁",items:[
+    {txt:"Lista de proyectos activos y su estado / semáforo",tag:"CTX-01"},
+    {txt:"Hitos próximos y línea base comprometida",tag:"CTX-02"},
+    {txt:"Riesgos abiertos y planes de mitigación",tag:"CTX-03"},
+    {txt:"Estado de presupuesto / CAPEX del portafolio",tag:"CTX-04"}]},
+  {cat:"Stakeholders y reuniones",ico:"🤝",items:[
+    {txt:"Directorio de sponsors y líderes usuarios (nombre / rol)",tag:"STK-01"},
+    {txt:"Reuniones y comités recurrentes (agenda y horario)",tag:"STK-02"}]},
+  {cat:"Pendientes y compromisos",ico:"📌",items:[
+    {txt:"Entregables en curso con fecha comprometida",tag:"PND-01"},
+    {txt:"Aprobaciones o decisiones pendientes",tag:"PND-02"}]},
+  {cat:"Documentación y firma",ico:"🗂️",items:[
+    {txt:"Repositorio, dashboards y plantillas compartidos",tag:"DOC-01"},
+    {txt:"Firma de conformidad — titular y relevo",tag:"DOC-02"}]}
+];
+function accesosTpl(pf){
+  return [
+    {sistema:"VPN Antamina (perfil portafolio)",tipo:"Red",responsable:"TI · Accesos"},
+    {sistema:"Correo y Microsoft Teams",tipo:"Colaboración",responsable:"TI · M365"},
+    {sistema:"SharePoint — "+pf,tipo:"Documental",responsable:"Dueño de sitio"},
+    {sistema:"Tablero Power BI del portafolio",tipo:"Reportes",responsable:"PMO Data"},
+    {sistema:"SAP — módulo del portafolio",tipo:"ERP",responsable:"TI · SAP"}
+  ].map(function(a){return {id:uid("ax"),sistema:a.sistema,tipo:a.tipo,responsable:a.responsable,estado:"pendiente"};});
+}
+function chkTpl(){
+  return CHK_TPL.map(function(c){
+    return {cat:c.cat,ico:c.ico,items:c.items.map(function(i){
+      return {id:uid("ck"),txt:i.txt,tag:i.tag,done:false};
+    })};
+  });
+}
 
-      <article class="card live">
-        <div class="card-top">
-          <span class="card-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h11l5 5v11a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M14 4v5h5M8 13h8M8 17h5"/>
-            </svg>
-          </span>
-          <span class="badge badge-live"><i></i>Disponible</span>
-        </div>
-        <h3>Minutas y acuerdos</h3>
-        <p class="card-desc">
-          Convierte la transcripción de Teams en el Status Report de acuerdos, cruza los
-          compromisos con las reuniones anteriores y arma el correo a los interesados.
-        </p>
-        <ul class="card-list">
-          <li>Minuta accionable desde la transcripción</li>
-          <li>Seguimiento de acuerdos entre reuniones</li>
-          <li>Correo listo para Outlook, con adjuntos</li>
-        </ul>
-        <div class="card-foot">
-          <span class="hours"><b>92</b> h/mes</span>
-          <a class="cta" href="./minutas/">
-            Abrir herramienta
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-        </div>
-      </article>
+/* ============ seed ============ */
+function seed(){
+  var C=[
+    {id:"c1",nombre:"Ana Quispe",ini:"AQ",portafolio:"Operaciones Mina",rol:"Consultor",color:"#2F8B34",vacTotal:30,vacUsados:6},
+    {id:"c2",nombre:"Diego Salazar",ini:"DS",portafolio:"Planta Concentradora",rol:"Consultor",color:"#206E8C",vacTotal:30,vacUsados:12},
+    {id:"c3",nombre:"Carla Ninanya",ini:"CN",portafolio:"Sostenibilidad & MA",rol:"Consultor",color:"#B4642E",vacTotal:30,vacUsados:4},
+    {id:"c4",nombre:"Luis Ramírez",ini:"LR",portafolio:"Mant. & Confiabilidad",rol:"Consultor",color:"#6a5aa8",vacTotal:30,vacUsados:18},
+    {id:"c5",nombre:"Rosa Huamán",ini:"RH",portafolio:"Proy. Reposición Antamina",rol:"Consultor",color:"#0B3A3F",vacTotal:30,vacUsados:9},
+    {id:"c6",nombre:"Marco Antón",ini:"MA",portafolio:"Transformación Digital / TI",rol:"Consultor",color:"#9B7B1E",vacTotal:30,vacUsados:2},
+    {id:"lider",nombre:"Elena Palomino",ini:"EP",portafolio:"Coordinación PMO",rol:"Líder",color:"#3F514A",vacTotal:30,vacUsados:8}
+  ];
+  var Y=today().getFullYear();
+  function mk(id,cid,tipo,mi,di,mf,df,rel){
+    var a={id:id,consultorId:cid,tipo:tipo,fechaInicio:iso(new Date(Y,mi,di)),fechaFin:iso(new Date(Y,mf,df)),
+      estado:"Aprobada",relevoId:rel||null,responsablePmo:rel?"lider":null,
+      fechaLimiteAccesos:rel?iso(new Date(Y,mi,Math.max(1,di-3))):null,accesos:[],checklist:[]};
+    if(rel){var pf=C.filter(function(c){return c.id===cid;})[0].portafolio;a.accesos=accesosTpl(pf);a.checklist=chkTpl();}
+    return a;
+  }
+  var A=[
+    mk("A-2026-041","c3","vacaciones",6,21,7,8,"c6"),
+    mk("A-2026-039","c1","vacaciones",7,4,7,24,"c2"),
+    mk("A-2026-045","c4","licencia",7,10,7,14,null),
+    mk("A-2026-052","c2","capacitacion",8,15,8,19,null),
+    mk("A-2026-058","c6","descanso",9,27,10,7,"c3"),
+    mk("A-2026-060","c5","vacaciones",11,1,11,15,"c4")
+  ];
+  var a41=A[0];
+  a41.accesos[0].estado="otorgado";a41.accesos[1].estado="otorgado";a41.accesos[4].estado="tramite";
+  a41.checklist[0].items[0].done=true;a41.checklist[0].items[1].done=true;
+  a41.checklist[1].items[0].done=true;a41.checklist[1].items[1].done=true;a41.checklist[1].items[2].done=true;
+  a41.checklist[2].items[0].done=true;
+  var a39=A[1];a39.accesos.forEach(function(x){x.estado="otorgado";});
+  a39.checklist[0].items[0].done=true;a39.checklist[1].items[0].done=true;a39.checklist[1].items[1].done=true;
 
-    </div>
-  </section>
+  var P=[
+    {id:"P-01",nombre:"Optimización de flota de acarreo",portafolio:"Operaciones Mina",respId:"c1",semaforo:"verde",avance:72,hito:"Cierre de fase 2",fechaHito:Y+"-08-20",riesgos:["Disponibilidad de repuestos críticos"],presupuesto:"US$ 4.2 M",capex:68,act:Y+"-07-10"},
+    {id:"P-02",nombre:"Plan de minado 2027",portafolio:"Operaciones Mina",respId:"c1",semaforo:"ambar",avance:40,hito:"Entrega de borrador",fechaHito:Y+"-09-15",riesgos:["Datos geológicos incompletos","Dependencia de consultora externa"],presupuesto:"US$ 0.9 M",capex:35,act:Y+"-07-08"},
+    {id:"P-03",nombre:"Recuperación de molienda SAG",portafolio:"Planta Concentradora",respId:"c2",semaforo:"rojo",avance:28,hito:"Arranque de pruebas",fechaHito:Y+"-07-30",riesgos:["Retraso de repuesto crítico (12 semanas)","Ventana de parada limitada"],presupuesto:"US$ 6.8 M",capex:41,act:Y+"-07-12"},
+    {id:"P-04",nombre:"Balance metalúrgico Q3",portafolio:"Planta Concentradora",respId:"c2",semaforo:"verde",avance:88,hito:"Cierre Q3",fechaHito:Y+"-09-30",riesgos:[],presupuesto:"US$ 0.3 M",capex:80,act:Y+"-07-11"},
+    {id:"P-05",nombre:"Monitoreo ambiental participativo",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"verde",avance:65,hito:"Campaña de monitoreo",fechaHito:Y+"-08-05",riesgos:[],presupuesto:"US$ 1.1 M",capex:60,act:Y+"-07-14"},
+    {id:"P-06",nombre:"Cierre progresivo de componentes",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"ambar",avance:45,hito:"Aprobación de plan",fechaHito:Y+"-10-01",riesgos:["Permiso sectorial pendiente"],presupuesto:"US$ 2.6 M",capex:38,act:Y+"-07-09"},
+    {id:"P-07",nombre:"Mantenimiento predictivo (RCM)",portafolio:"Mant. & Confiabilidad",respId:"c4",semaforo:"ambar",avance:55,hito:"Piloto en chancado",fechaHito:Y+"-09-10",riesgos:["Sensores pendientes de instalación"],presupuesto:"US$ 1.8 M",capex:52,act:Y+"-07-07"},
+    {id:"P-08",nombre:"Reposición Antamina — Ingeniería",portafolio:"Proy. Reposición Antamina",respId:"c5",semaforo:"verde",avance:33,hito:"Hito de ingeniería básica",fechaHito:Y+"-12-01",riesgos:["Aprobación de estudio de factibilidad"],presupuesto:"US$ 24.0 M",capex:22,act:Y+"-07-13"},
+    {id:"P-09",nombre:"Torre de control PMO",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"verde",avance:70,hito:"Salida a producción",fechaHito:Y+"-10-15",riesgos:[],presupuesto:"US$ 0.7 M",capex:64,act:Y+"-07-15"},
+    {id:"P-10",nombre:"Integración SAP – Power BI",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"ambar",avance:50,hito:"Certificación de datos",fechaHito:Y+"-08-28",riesgos:["Calidad de datos maestros"],presupuesto:"US$ 1.4 M",capex:47,act:Y+"-07-06"}
+  ];
 
-  <section class="section band">
-    <div class="section-head">
-      <h2>De dónde salen las horas</h2>
-      <p>Distribución del esfuerzo mensual registrado por los siete PMs del equipo.</p>
-    </div>
-    <div class="bars">
-      <div class="bar-row">
-        <span class="bar-lbl">Reportes y presentaciones</span>
-        <span class="bar-track"><span class="bar-fill" style="--w:100%"></span></span>
-        <span class="bar-val">143 h</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-lbl">Evaluación de ofertas</span>
-        <span class="bar-track"><span class="bar-fill alt" style="--w:70%"></span></span>
-        <span class="bar-val">100 h</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-lbl">Minutas y acuerdos</span>
-        <span class="bar-track"><span class="bar-fill live" style="--w:64%"></span></span>
-        <span class="bar-val">92 h</span>
-      </div>
-      <div class="bar-row muted">
-        <span class="bar-lbl">Otras tareas recurrentes</span>
-        <span class="bar-track"><span class="bar-fill grey" style="--w:26%"></span></span>
-        <span class="bar-val">37 h</span>
-      </div>
-    </div>
-    <p class="foot-note">
-      Fuente: <b>Torre de Tiempos PMO Antamina</b> — levantamiento de esfuerzo declarado por cada PM
-      (horas al día x días al mes). Las horas por iniciativa agrupan las actividades que cada
-      herramienta reemplaza total o parcialmente.
-    </p>
-  </section>
-</main>
+  var M=[
+    {id:"M-2026-014",titulo:"Comité semanal — Planta Concentradora",portafolio:"Planta Concentradora",
+     fecha:Y+"-07-10",hora:"09:00",modalidad:"Virtual (Teams)",lugar:"Microsoft Teams",
+     asistentes:[{nombre:"Diego Salazar",rol:"Consultor PMO"},{nombre:"Elena Palomino",rol:"Líder PMO"},{nombre:"J. Ramos",rol:"Superintendente de Planta"}],
+     agenda:["Avance de recuperación de molienda SAG","Ventana de parada programada","Ejecución presupuestal Q3"],
+     acuerdos:["Se prioriza la compra del repuesto crítico con el proveedor alterno.","Se reprograma la parada de planta a la semana 34.","El proyecto se mantiene en rojo hasta confirmar la fecha del repuesto."],
+     compromisos:[
+       {id:uid("cp"),desc:"Confirmar fecha de llegada del repuesto crítico",responsable:"Diego Salazar",fecha:Y+"-07-24",estado:"curso"},
+       {id:uid("cp"),desc:"Actualizar cronograma de parada de planta",responsable:"J. Ramos",fecha:Y+"-07-31",estado:"pendiente"}],
+     notas:"Se solicita escalar el riesgo del repuesto al comité de operaciones."},
+    {id:"M-2026-015",titulo:"Kick-off — Torre de control PMO",portafolio:"Transformación Digital / TI",
+     fecha:Y+"-07-14",hora:"15:00",modalidad:"Presencial",lugar:"Sala Yanacancha",
+     asistentes:[{nombre:"Marco Antón",rol:"Consultor PMO"},{nombre:"Elena Palomino",rol:"Líder PMO"},{nombre:"P. Cruz",rol:"TI Antamina"}],
+     agenda:["Alcance y objetivos","Arquitectura y accesos","Plan de despliegue"],
+     acuerdos:["Se aprueba el alcance de la fase 1.","TI habilitará los accesos a Dataverse antes del 25 de julio."],
+     compromisos:[
+       {id:uid("cp"),desc:"Habilitar accesos a Dataverse para el equipo PMO",responsable:"P. Cruz",fecha:Y+"-07-25",estado:"pendiente"},
+       {id:uid("cp"),desc:"Enviar plan de despliegue fase 1",responsable:"Marco Antón",fecha:Y+"-07-22",estado:"hecho"}],
+     notas:""}
+  ];
+  return {consultores:C,ausencias:A,proyectos:P,minutas:M,transcripciones:seedTranscripciones(),cfg:{ventana:30,umbral:90},v:2};
+}
 
-<footer class="footer">
-  <div class="footer-inner">
-    <span>Portal PMO Antamina · Automatización de procesos</span>
-    <span class="sep">|</span>
-    <span>Minsait Business Consulting · Perú</span>
-  </div>
-</footer>
+function seedTranscripciones(){
+  var Y=today().getFullYear(), NL=String.fromCharCode(10);
+  function t(id,titulo,fecha,pf,part,origen,texto){
+    return {id:"T-"+Y+"-"+id,titulo:titulo,fecha:Y+"-"+fecha,portafolio:pf,participantes:part,
+      origen:origen,texto:texto,caracteres:texto.length,
+      fragmentos:Math.max(1,Math.ceil(texto.length/900))};
+  }
+  return [
+    t("001","Comité semanal — Planta Concentradora (transcripción)","07-10","Planta Concentradora",
+      "Diego Salazar, Elena Palomino, J. Ramos","Teams",
+      ["Elena Palomino: Buenos días. Empecemos por el estado de la recuperación de molienda SAG.",
+      "Diego Salazar: El proyecto sigue en rojo. El avance es 28% contra un 45% planificado. La causa raíz es el retraso del repuesto crítico del molino: el proveedor original nos dio una ventana de doce semanas, lo que nos deja fuera de la parada programada.",
+      "J. Ramos: Confirmo. Sin ese repuesto no podemos arrancar las pruebas del 30 de julio.",
+      "Elena Palomino: ¿Qué alternativas tenemos?",
+      "Diego Salazar: Cotizamos con un proveedor alterno en Lima, entrega estimada cinco semanas, con un sobrecosto aproximado de 180 mil dólares sobre el presupuesto de 6.8 millones.",
+      "Elena Palomino: Procedamos con el proveedor alterno y escalemos el riesgo al comité de operaciones. Diego, confirma la fecha de llegada antes del 24 de julio.",
+      "J. Ramos: Reprogramamos la parada de planta a la semana 34 y actualizo el cronograma.",
+      "Elena Palomino: De acuerdo. Sobre el balance metalúrgico Q3, ¿cómo vamos?",
+      "Diego Salazar: En verde, 88% de avance, cierre previsto el 30 de septiembre sin observaciones.",
+      "Elena Palomino: Perfecto. La ejecución presupuestal del portafolio está en 41% de CAPEX, dentro de lo esperado."].join(NL)),
+    t("002","Kick-off — Torre de control PMO (transcripción)","07-14","Transformación Digital / TI",
+      "Marco Antón, Elena Palomino, P. Cruz","Teams",
+      ["Marco Antón: El objetivo de la Torre de control PMO es consolidar el estado de los seis portafolios en un solo tablero, con salida a producción el 15 de octubre.",
+      "P. Cruz: Desde TI necesitamos definir los accesos. Proponemos Dataverse con Entra ID, aprovechando el licenciamiento M365 que ya tiene Antamina.",
+      "Elena Palomino: ¿Cuál es el riesgo principal?",
+      "P. Cruz: La calidad de los datos maestros que vienen de SAP. En la integración SAP — Power BI encontramos duplicados en centros de costo; eso mantiene ese proyecto en ámbar.",
+      "Marco Antón: Coincido. La integración está en 50% y la certificación de datos es el hito del 28 de agosto. Si los maestros no se limpian, arrastramos el problema a la Torre de control.",
+      "Elena Palomino: Acordamos entonces: TI habilita accesos a Dataverse antes del 25 de julio, y Marco envía el plan de despliegue de la fase 1 el 22 de julio.",
+      "Marco Antón: Confirmado. El alcance de la fase 1 queda aprobado."].join(NL)),
+    t("003","Revisión mensual — Sostenibilidad y Medio Ambiente","07-08","Sostenibilidad & MA",
+      "Carla Ninanya, Elena Palomino, R. Vega (Comunidades)","Presencial",
+      ["Carla Ninanya: El monitoreo ambiental participativo va en verde, 65% de avance. La campaña de monitoreo con las comunidades está programada para el 5 de agosto.",
+      "R. Vega: Las comunidades de Huaripampa y San Marcos ya confirmaron participación. Es clave que el relevo conozca a los dirigentes antes de la campaña.",
+      "Carla Ninanya: Justamente, del 21 de julio al 8 de agosto estaré de vacaciones. Marco Antón toma el relevo del portafolio.",
+      "Elena Palomino: Marco necesita los accesos a SAP ambiental y al tablero Power BI. Eso es lo que hoy está pendiente en la ficha de relevo.",
+      "Carla Ninanya: Sobre el cierre progresivo de componentes, seguimos en ámbar: 45% de avance. El permiso sectorial sigue pendiente en el ministerio y ese es el riesgo principal; la aprobación del plan está prevista para el 1 de octubre.",
+      "Elena Palomino: Dejemos constancia de que el traspaso a Marco debe cubrir el estado del permiso sectorial y el contacto con los dirigentes comunales."].join(NL))
+  ];
+}
 
-</body>
-</html>
+/* ============ persistence ============ */
+var KEY="suite-pmo-antamina-v1";
+var DB;
+function load(){try{var r=localStorage.getItem(KEY);if(r){DB=JSON.parse(r);if(!DB.transcripciones)DB.transcripciones=seedTranscripciones();return;}}catch(e){}DB=seed();save();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+function reset(){DB=seed();save();}
+
+/* ============ lookups & rules ============ */
+function consultores(){return DB.consultores.filter(function(c){return c.rol==="Consultor";});}
+function byId(id){for(var i=0;i<DB.consultores.length;i++)if(DB.consultores[i].id===id)return DB.consultores[i];return null;}
+function ausencia(id){for(var i=0;i<DB.ausencias.length;i++)if(DB.ausencias[i].id===id)return DB.ausencias[i];return null;}
+function minuta(id){for(var i=0;i<DB.minutas.length;i++)if(DB.minutas[i].id===id)return DB.minutas[i];return null;}
+function chkPct(a){if(!a.checklist||!a.checklist.length)return 0;var t=0,d=0;a.checklist.forEach(function(c){c.items.forEach(function(i){t++;if(i.done)d++;});});return t?Math.round(d/t*100):0;}
+function accesosOtorgados(a){if(!a.accesos||!a.accesos.length)return 0;return a.accesos.filter(function(x){return x.estado==="otorgado";}).length;}
+function accesosOk(a){return !!(a.accesos&&a.accesos.length&&a.accesos.every(function(x){return x.estado==="otorgado";}));}
+function esCorta(a){return diasHab(a.fechaInicio,a.fechaFin)<=3;}
+function estadoRelevo(a){
+  if(a.estado==="Cerrada")return{k:"cerrada",label:"Cerrada",pill:"muted"};
+  if(!a.relevoId)return (esCorta(a)&&a.tipo!=="vacaciones")?{k:"ligera",label:"Cobertura ligera",pill:"info"}:{k:"sinrelevo",label:"Sin relevo",pill:"crit"};
+  if(accesosOk(a)&&chkPct(a)>=DB.cfg.umbral)return{k:"lista",label:"Lista para relevo",pill:"ok"};
+  return{k:"prep",label:"En preparación",pill:"warn"};
+}
+function ordenadas(){return DB.ausencias.slice().sort(function(a,b){return pd(a.fechaInicio)-pd(b.fechaInicio);});}
+function proximas(){var t=today();return ordenadas().filter(function(a){return pd(a.fechaFin)>=t;});}
+function compromisosAbiertos(){
+  var out=[];
+  DB.minutas.forEach(function(m){(m.compromisos||[]).forEach(function(c){if(c.estado!=="hecho")out.push({c:c,m:m});});});
+  return out.sort(function(x,y){return pd(x.c.fecha||"2999-01-01")-pd(y.c.fecha||"2999-01-01");});
+}
+function portafolios(){var s=[];consultores().forEach(function(c){if(s.indexOf(c.portafolio)<0)s.push(c.portafolio);});return s;}
+
+/* ============ state ============ */
+var state={tool:"hub",vtab:"panel",mtab:"lista",busq:{q:"",res:null,cargando:false},year:today().getFullYear(),modal:null,chat:[
+  {who:"bot",html:"<p>Hola 👋 Soy el <b>Asistente PMO</b>. Consulto los <b>10 proyectos</b> de los 6 portafolios, las ausencias del equipo, los compromisos de las actas y el <b>texto completo de las transcripciones</b> de reuniones.</p><p>Pregúntame qué se acordó en una reunión, por qué se atrasó un proyecto, quién asumió un compromiso o el estado de un portafolio. Cuando responda usando el histórico, te muestro <b>las fuentes</b>.</p>"}
+]};
+
+/* ============ small helpers ============ */
+function avatar(c,s){s=s||28;return '<span class="avatar" style="background:'+c.color+';width:'+s+'px;height:'+s+'px;font-size:'+(s*.4)+'px">'+esc(c.ini)+'</span>';}
+function pill(cls,label){return '<span class="pill '+cls+'"><span class="d"></span>'+esc(label)+'</span>';}
+
+/* ============ TOOL NAV ============ */
+var TOOLS=[
+  {k:"hub",ic:"⌂",label:"Inicio"},
+  {k:"vacaciones",ic:"🗓",label:"Relevo·PMO"},
+  {k:"minutas",ic:"📝",label:"Minutas"},
+  {k:"transcripciones",ic:"🎙",label:"Transcripciones"},
+  {k:"asistente",ic:"💬",label:"Asistente"}
+];
+function renderTools(){
+  document.getElementById("tools").innerHTML=TOOLS.map(function(x){
+    return '<button data-tool="'+x.k+'" class="'+(state.tool===x.k?"active":"")+'"><span aria-hidden="true">'+x.ic+'</span> '+x.label+'</button>';
+  }).join("");
+}
+
+/* ============ HUB ============ */
+function hubHTML(){
+  var t=today(),prox=proximas();
+  var kp7=prox.filter(function(a){var d=diasEntre(t,pd(a.fechaInicio));return d>=0&&d<=7;}).length;
+  var rojos=DB.proyectos.filter(function(p){return p.semaforo==="rojo";}).length;
+  var abiertos=compromisosAbiertos().length;
+
+  var cards=[
+    {tool:"vacaciones",color:"var(--brand)",ic:"🗓️",t:"Relevo·PMO",
+     d:"Vacaciones, ausencias y relevos de los consultores. Mapa anual, radar de anticipación, control de accesos y checklist de traspaso.",
+     stats:[pill("ok",consultores().length+" consultores"),pill(kp7?"warn":"muted",prox.length+" ausencias próximas"),pill("copper","Checklist de traspaso")]},
+    {tool:"minutas",color:"var(--copper)",ic:"📝",t:"PMO Automa · Minutas",
+     d:"Actas con agenda, acuerdos y compromisos. Guardadas en base de datos y consultables como fuente histórica.",
+     stats:[pill("copper",DB.minutas.length+" actas"),pill(abiertos?"warn":"ok",abiertos+" compromisos abiertos"),
+            pill(API.on?"info":"muted",API.on?"Base de datos":"Local")]},
+    {tool:"transcripciones",color:"#6a5aa8",ic:"🎙️",t:"Transcripciones",
+     d:"Repositorio de transcripciones de reuniones, indexadas y buscables. Alimentan al Asistente y generan actas con IA.",
+     stats:[pill("info",(DB.transcripciones||[]).length+" transcripciones"),
+            pill("muted",(DB.transcripciones||[]).reduce(function(s,t){return s+fragsDe(t);},0)+" fragmentos")]},
+    {tool:"asistente",color:"var(--info)",ic:"💬",t:"Asistente PMO",
+     d:"Responde sobre el estado de los proyectos usando los datos y el texto de las transcripciones, citando sus fuentes.",
+     stats:[pill("info",DB.proyectos.length+" proyectos"),pill(rojos?"crit":"ok",rojos+" en rojo"),
+            pill(LLM.on?"ok":"muted",LLM.on?"IA activa":"Modo local")]}
+  ].map(function(c){
+    return '<div class="tool-card" style="--tc:'+c.color+'" data-tool="'+c.tool+'">'+
+      '<div class="tico">'+c.ic+'</div><h3>'+esc(c.t)+'</h3><div class="td">'+esc(c.d)+'</div>'+
+      '<div class="tstats">'+c.stats.join("")+'</div>'+
+      '<div class="tgo">Abrir herramienta <span aria-hidden="true">→</span></div></div>';
+  }).join("");
+
+  return '<div class="hero"><div class="hero-bg" aria-hidden="true"></div>'+
+    '<svg class="ridge" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">'+
+    '<path d="M0,70 L0,44 L160,24 L320,45 L470,13 L620,40 L780,19 L940,46 L1100,26 L1270,50 L1440,30 L1440,70 Z" fill="var(--bg)"/></svg>'+
+    '<div class="hero-in"><div class="eyebrow"><span class="dot"></span> Hub de herramientas · PMO</div>'+
+    '<h1>Las herramientas de la PMO Antamina, en un solo lugar</h1>'+
+    '<p>Gestiona la cobertura del equipo, documenta las reuniones y consulta el estado de cualquier proyecto sin salir de la suite.</p>'+
+    '<div class="hero-stats"><span class="chip"><b>'+DB.proyectos.length+'</b> proyectos</span>'+
+    '<span class="chip"><b>'+portafolios().length+'</b> portafolios</span>'+
+    '<span class="chip"><b>'+consultores().length+'</b> consultores</span>'+
+    '<span class="chip"><b>'+DB.minutas.length+'</b> minutas</span></div></div></div>'+
+    '<div class="page-head"><div><h2>Herramientas</h2><div class="sub">Tres herramientas conectadas que comparten los mismos datos</div></div></div>'+
+    '<div class="tgrid">'+cards+
+      '<div class="tool-card soon"><div class="tico" style="background:var(--surface-2);color:var(--muted)">＋</div>'+
+      '<h3 style="color:var(--muted)">Más herramientas</h3><div class="td">Siguientes automatizaciones de la PMO: reportes ejecutivos al cliente, gestión de riesgos y tablero de CAPEX.</div>'+
+      '<div class="tgo" style="color:var(--muted)">Próximamente</div></div>'+
+    '</div>';
+}
+
+/* ============ VACACIONES ============ */
+function posPct(s,end){
+  var d=pd(s),y=state.year;
+  if(d.getFullYear()<y)return 0;
+  if(d.getFullYear()>y)return 100;
+  var m=d.getMonth(),day=d.getDate(),frac=(end?day:(day-1))/dim(y,m);
+  return((m+frac)/12)*100;
+}
+function panelHTML(){
+  var t=today(),prox=proximas();
+  var kpAus=DB.ausencias.filter(function(a){return a.estado!=="Cerrada";}).length;
+  var kp7=prox.filter(function(a){var d=diasEntre(t,pd(a.fechaInicio));return d>=0&&d<=7;}).length;
+  var kpAcc=prox.reduce(function(s,a){return s+(a.accesos?a.accesos.filter(function(x){return x.estado!=="otorgado";}).length:0);},0);
+  var kpSin=prox.filter(function(a){return estadoRelevo(a).k==="sinrelevo";}).length;
+  var rad=prox.map(function(a){
+    var c=byId(a.consultorId),d=diasEntre(t,pd(a.fechaInicio)),live=d<=0&&diasEntre(t,pd(a.fechaFin))>=0;
+    var st=estadoRelevo(a),rel=a.relevoId?byId(a.relevoId):null;
+    var hot=d>=0&&d<=DB.cfg.ventana&&st.k!=="lista"&&st.k!=="ligera";
+    var cd=live?'<div class="cd live"><div class="d">EN<br>CURSO</div></div>':
+      '<div class="cd '+(hot?'hot':'')+'"><div class="d tnum">'+Math.max(0,d)+'</div><div class="u">días</div></div>';
+    var pills='';
+    if(st.k==="sinrelevo")pills=pill("crit","Sin relevo");
+    else if(st.k==="ligera")pills=pill("info","Cobertura ligera");
+    else{
+      pills=pill("ok","Relevo asignado");
+      if(a.accesos&&a.accesos.length)pills+=pill(accesosOk(a)?"ok":"warn","Accesos "+accesosOtorgados(a)+"/"+a.accesos.length);
+      pills+=pill(chkPct(a)>=DB.cfg.umbral?"ok":"warn","Traspaso "+chkPct(a)+"%");
+    }
+    return '<div class="radar-item '+(hot?'hot':'')+'" data-open="'+a.id+'">'+cd+
+      '<div class="radar-main"><div class="who">'+avatar(c,22)+esc(c.nombre)+' · '+TIPOS[a.tipo].label+'</div>'+
+      '<div class="meta">Portafolio <b>'+esc(c.portafolio)+'</b> · '+fmt(a.fechaInicio)+' – '+fmt(a.fechaFin)+
+      (rel?' · Relevo: <b>'+esc(rel.nombre)+'</b>':' · Relevo: <b>por asignar</b>')+'</div></div>'+
+      '<div class="radar-st">'+pills+'</div></div>';
+  }).join("");
+  if(!rad)rad='<div class="empty"><div class="e-ic">📭</div>No hay ausencias próximas registradas.</div>';
+  return '<div class="banner">📌 Hoy es <b style="margin-left:4px">'+fmtL(iso(t))+'</b>. Ventana de anticipación: '+DB.cfg.ventana+' días · umbral de traspaso: '+DB.cfg.umbral+'%.</div>'+
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+kpAus+'</div><div class="l">Ausencias vigentes</div></div>'+
+      '<div class="kpi w"><div class="n tnum">'+kp7+'</div><div class="l">Próximas (≤ 7 días)</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+kpAcc+'</div><div class="l">Accesos por gestionar</div></div>'+
+      '<div class="kpi '+(kpSin?'r':'i')+'"><div class="n tnum">'+kpSin+'</div><div class="l">Sin relevo asignado</div></div>'+
+    '</div>'+
+    '<div class="card"><div class="card-h"><h3>🔭 Radar de anticipación</h3><span class="sub">Clic para ver el detalle</span></div>'+
+    '<div class="card-b"><div class="radar">'+rad+'</div></div></div>';
+}
+function mapaHTML(){
+  var t=today(),cs=consultores(),y=state.year;
+  var nowLine=(t.getFullYear()===y)?posPct(iso(t),false):null;
+  var nowMonth=(t.getFullYear()===y)?t.getMonth():-1;
+  var months=MES.map(function(m,i){return '<span class="'+(i===nowMonth?'now':'')+'">'+m+'</span>';}).join("");
+  var rows=cs.map(function(c){
+    var mine=DB.ausencias.filter(function(a){return a.consultorId===c.id&&pd(a.fechaInicio).getFullYear()===y;});
+    var bars=mine.map(function(a){
+      var L=posPct(a.fechaInicio,false),R=posPct(a.fechaFin,true),W=Math.max(2,R-L);
+      var rel=a.relevoId?byId(a.relevoId):null,T=TIPOS[a.tipo];
+      return '<div class="g-bar '+T.bar+'" style="left:'+L+'%;width:'+W+'%" data-open="'+a.id+'" title="'+esc(c.nombre+' · '+T.label+' · '+fmt(a.fechaInicio)+'–'+fmt(a.fechaFin))+'">'+
+        T.abbr+' '+fmt(a.fechaInicio)+(rel?'<span class="rv">'+esc(rel.ini)+'</span>':'')+'</div>';
+    }).join("");
+    return '<div class="g-row"><div class="g-name">'+avatar(c,26)+'<div><div class="nm">'+esc(c.nombre)+'</div><div class="pf">'+esc(c.portafolio)+'</div></div></div>'+
+      '<div class="g-track">'+(nowLine!=null?'<div class="g-now" style="left:'+nowLine+'%"></div>':'')+bars+'</div></div>';
+  }).join("");
+  return '<div class="gantt-tools"><div class="spacer"></div>'+
+    '<div class="yearsel"><button data-year="-1" aria-label="Año anterior">‹</button><span class="y tnum">'+y+'</span><button data-year="1" aria-label="Año siguiente">›</button></div></div>'+
+    '<div class="gantt"><div class="scrollx"><div class="gantt-inner">'+
+    '<div class="g-months"><div class="lbl">Consultor / Portafolio</div><div class="mrow">'+months+'</div></div>'+rows+
+    '</div></div></div>'+
+    '<div class="legend">'+
+      '<span><i class="bar-vac"></i> Vacaciones</span><span><i class="bar-des"></i> Descanso</span>'+
+      '<span><i class="bar-lic"></i> Licencia</span><span><i class="bar-cap"></i> Capacitación</span>'+
+      '<span><span style="width:2px;height:14px;background:var(--copper);display:block"></span> Hoy</span></div>';
+}
+function ausenciasHTML(){
+  var rows=ordenadas().map(function(a){
+    var c=byId(a.consultorId),rel=a.relevoId?byId(a.relevoId):null,st=estadoRelevo(a),T=TIPOS[a.tipo];
+    return '<tr data-open="'+a.id+'"><td class="cell-mono">'+esc(a.id)+'</td>'+
+      '<td><div class="who">'+avatar(c,26)+'<div>'+esc(c.nombre)+'<div style="font-size:11.5px;color:var(--muted);font-weight:400">'+esc(c.portafolio)+'</div></div></div></td>'+
+      '<td>'+pill(T.pill,T.label)+'</td>'+
+      '<td class="cell-mono">'+fmt(a.fechaInicio)+' – '+fmt(a.fechaFin)+'<div style="color:var(--muted)">'+diasHab(a.fechaInicio,a.fechaFin)+' días háb.</div></td>'+
+      '<td>'+(rel?'<div class="who">'+avatar(rel,24)+esc(rel.nombre)+'</div>':'<span class="pill muted">—</span>')+'</td>'+
+      '<td>'+pill(st.pill,st.label)+'</td></tr>';
+  }).join("");
+  return '<div class="card"><div class="scrollx"><table class="tbl">'+
+    '<thead><tr><th>ID</th><th>Consultor</th><th>Tipo</th><th>Periodo</th><th>Relevo</th><th>Estado</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></div>'+
+    (rows?'':'<div class="empty"><div class="e-ic">📭</div>No hay ausencias.</div>')+'</div>';
+}
+function consultoresHTML(){
+  return '<div class="cgrid">'+consultores().map(function(c){
+    var disp=c.vacTotal-c.vacUsados,pct=Math.round(c.vacUsados/c.vacTotal*100);
+    var aus=DB.ausencias.filter(function(a){return a.consultorId===c.id;}).length;
+    var rel=DB.ausencias.filter(function(a){return a.relevoId===c.id;}).length;
+    var pr=DB.proyectos.filter(function(p){return p.respId===c.id;}).length;
+    return '<div class="ccard"><div class="top">'+avatar(c,40)+'<div><div class="nm">'+esc(c.nombre)+'</div><div class="pf">'+esc(c.portafolio)+'</div></div></div>'+
+      '<div class="pbar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="saldo"><span>Vacaciones: <b>'+disp+'</b> disp. de '+c.vacTotal+'</span><span>'+c.vacUsados+' usados</span></div>'+
+      '<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+pill("muted",aus+" ausencias")+pill("copper",rel+" relevos")+pill("info",pr+" proyectos")+'</div></div>';
+  }).join("")+'</div>';
+}
+function renderVacaciones(){
+  var subs=[{k:"panel",l:"Panel"},{k:"mapa",l:"Mapa"},{k:"ausencias",l:"Ausencias"},{k:"consultores",l:"Consultores"}];
+  var body=state.vtab==="panel"?panelHTML():state.vtab==="mapa"?mapaHTML():state.vtab==="ausencias"?ausenciasHTML():consultoresHTML();
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>Relevo·PMO — Vacaciones y relevos</h2>'+
+    '<div class="sub">Cobertura de los portafolios ante vacaciones, descansos y licencias</div></div>'+
+    '<div class="spacer"></div><button class="btn primary sm" data-anew="1">＋ Nueva ausencia</button></div>'+
+    '<div class="subtabs">'+subs.map(function(s){return '<button data-vtab="'+s.k+'" class="'+(state.vtab===s.k?"active":"")+'">'+s.l+'</button>';}).join("")+'</div>'+
+    body;
+}
+
+/* ============ MINUTAS ============ */
+function cmpEstado(e){return {pendiente:["crit","Pendiente"],curso:["warn","En curso"],hecho:["ok","Hecho"]}[e]||["muted",e];}
+function renderMinutas(){
+  var ab=compromisosAbiertos();
+  var cards=DB.minutas.slice().sort(function(a,b){return pd(b.fecha)-pd(a.fecha);}).map(function(m){
+    var abiertos=(m.compromisos||[]).filter(function(c){return c.estado!=="hecho";}).length;
+    return '<div class="mcard" data-mopen="'+m.id+'">'+
+      '<div class="mt">'+esc(m.titulo)+'</div>'+
+      '<div class="mm">'+esc(m.id)+' · '+fmtL(m.fecha)+' · '+esc(m.hora||"")+'</div>'+
+      '<div style="font-size:13px;color:var(--ink-soft)">'+(m.asistentes||[]).length+' asistentes · '+(m.acuerdos||[]).length+' acuerdos · '+(m.agenda||[]).length+' puntos de agenda</div>'+
+      '<div class="mfoot">'+pill("muted",esc(m.portafolio||"General"))+pill(abiertos?"warn":"ok",abiertos?abiertos+" compromisos abiertos":"Compromisos al día")+'</div></div>';
+  }).join("");
+
+  var pend=ab.slice(0,6).map(function(x){
+    var m=cmpEstado(x.c.estado);
+    return '<div class="cmp"><div class="cd2"><div>'+esc(x.c.desc)+'</div>'+
+      '<div class="cmeta">'+esc(x.c.responsable||"—")+' · vence '+fmt(x.c.fecha)+' · '+esc(x.m.id)+'</div></div>'+
+      '<button class="cyc" data-ccyc="'+x.m.id+'|'+x.c.id+'" title="Clic para cambiar estado">'+pill(m[0],m[1])+'</button></div>';
+  }).join("");
+
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>PMO Automa — Generador de minutas</h2>'+
+    '<div class="sub">Actas de reunión con agenda, acuerdos y seguimiento de compromisos</div></div>'+
+    '<div class="spacer"></div>'+
+    (API.on?'<span class="dbchip">🗄️ Base de datos · '+((API.stats&&API.stats.minutas)||DB.minutas.length)+' actas</span>'
+           :'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
+    '<button class="btn primary sm" data-mnew="1" style="margin-left:10px">＋ Nueva minuta</button></div>'+
+    '<div class="subtabs">'+
+      '<button data-mtab="lista" class="'+(state.mtab==="buscar"?"":"active")+'">Minutas y compromisos</button>'+
+      '<button data-mtab="buscar" class="'+(state.mtab==="buscar"?"active":"")+'">🔎 Buscar en el histórico</button>'+
+    '</div>'+
+    (state.mtab==="buscar"?
+      '<div class="card"><div class="card-b">'+
+        '<div style="display:flex;gap:9px;margin-bottom:14px">'+
+        '<input id="q-hist" value="'+esc(state.busq.q||"")+'" placeholder="Ej. repuesto crítico, permiso sectorial, accesos Dataverse…" '+
+        'style="flex:1;background:var(--surface-3);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:14px;color:var(--ink);font-family:inherit">'+
+        '<button class="btn primary" data-buscar="1">Buscar</button></div>'+
+        resultadosHTML()+'</div></div>'
+    :
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+DB.minutas.length+'</div><div class="l">Minutas registradas</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+DB.minutas.reduce(function(s,m){return s+(m.acuerdos||[]).length;},0)+'</div><div class="l">Acuerdos documentados</div></div>'+
+      '<div class="kpi '+(ab.length?'w':'i')+'"><div class="n tnum">'+ab.length+'</div><div class="l">Compromisos abiertos</div></div>'+
+      '<div class="kpi r"><div class="n tnum">'+ab.filter(function(x){return x.c.fecha&&pd(x.c.fecha)<today();}).length+'</div><div class="l">Compromisos vencidos</div></div>'+
+    '</div>'+
+    (pend?'<div class="card" style="margin-bottom:22px"><div class="card-h"><h3>📌 Compromisos abiertos</h3><span class="sub">Clic en el estado para actualizarlo</span></div><div class="card-b">'+pend+'</div></div>':'')+
+    '<div class="page-head" style="margin-bottom:14px"><div><h3 style="font-size:16px">Minutas</h3></div></div>'+
+    (cards?'<div class="mgrid">'+cards+'</div>':'<div class="card"><div class="empty"><div class="e-ic">📝</div>Aún no hay minutas. Crea la primera con “Nueva minuta”.</div></div>'));
+}
+function actaTexto(m){
+  var L=[];
+  L.push("ACTA DE REUNIÓN — "+m.titulo);
+  L.push("".padEnd(60,"="));
+  L.push("Código: "+m.id);
+  L.push("Fecha: "+fmtL(m.fecha)+"   Hora: "+(m.hora||"—"));
+  L.push("Modalidad: "+(m.modalidad||"—")+"   Lugar: "+(m.lugar||"—"));
+  L.push("Portafolio: "+(m.portafolio||"—"));
+  L.push("");
+  L.push("ASISTENTES");
+  (m.asistentes||[]).forEach(function(a){L.push("  - "+a.nombre+(a.rol?" ("+a.rol+")":""));});
+  L.push("");
+  L.push("AGENDA");
+  (m.agenda||[]).forEach(function(a,i){L.push("  "+(i+1)+". "+a);});
+  L.push("");
+  L.push("ACUERDOS");
+  (m.acuerdos||[]).forEach(function(a){L.push("  - "+a);});
+  L.push("");
+  L.push("COMPROMISOS");
+  (m.compromisos||[]).forEach(function(c){
+    L.push("  - "+c.desc+" | Responsable: "+(c.responsable||"—")+" | Fecha: "+(c.fecha||"—")+" | Estado: "+cmpEstado(c.estado)[1]);
+  });
+  if(m.notas){L.push("");L.push("NOTAS");L.push("  "+m.notas);}
+  L.push("");
+  L.push("Generado por PMO Automa — Suite PMO Antamina");
+  return L.join("\n");
+}
+function modalMinutaView(id){
+  var m=minuta(id);
+  var asis=(m.asistentes||[]).map(function(a){return '<li>'+esc(a.nombre)+(a.rol?' <span style="color:var(--muted)">— '+esc(a.rol)+'</span>':'')+'</li>';}).join("");
+  var ag=(m.agenda||[]).map(function(a){return '<li>'+esc(a)+'</li>';}).join("");
+  var ac=(m.acuerdos||[]).map(function(a){return '<li>'+esc(a)+'</li>';}).join("");
+  var cp=(m.compromisos||[]).map(function(c){
+    var e=cmpEstado(c.estado);
+    return '<div class="cmp"><div class="cd2"><div>'+esc(c.desc)+'</div><div class="cmeta">'+esc(c.responsable||"—")+' · vence '+fmt(c.fecha)+'</div></div>'+
+      '<button class="cyc" data-ccyc="'+m.id+'|'+c.id+'">'+pill(e[0],e[1])+'</button></div>';
+  }).join("");
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>'+esc(m.titulo)+'</h3><div class="sub">'+esc(m.id)+' · '+fmtL(m.fecha)+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b"><div class="acta">'+
+      '<div class="ah"><h4>Acta de reunión</h4><div class="meta-row" style="margin-top:7px">'+
+      '<span><b>Fecha:</b> '+fmtL(m.fecha)+'</span><span><b>Hora:</b> '+esc(m.hora||"—")+'</span>'+
+      '<span><b>Modalidad:</b> '+esc(m.modalidad||"—")+'</span><span><b>Lugar:</b> '+esc(m.lugar||"—")+'</span>'+
+      '<span><b>Portafolio:</b> '+esc(m.portafolio||"—")+'</span></div></div>'+
+      '<div class="as">Asistentes</div><ul>'+(asis||'<li style="color:var(--muted)">—</li>')+'</ul>'+
+      '<div class="as">Agenda</div><ol>'+(ag||'<li style="color:var(--muted)">—</li>')+'</ol>'+
+      '<div class="as">Acuerdos</div><ul>'+(ac||'<li style="color:var(--muted)">—</li>')+'</ul>'+
+      '<div class="as">Compromisos</div>'+(cp||'<div class="note">Sin compromisos registrados.</div>')+
+      (m.notas?'<div class="as">Notas</div><div style="font-size:13.5px;color:var(--ink-soft)">'+esc(m.notas)+'</div>':'')+
+    '</div></div>'+
+    '<div class="modal-f"><button class="btn danger left" data-mdel="'+m.id+'">Eliminar</button>'+
+      '<button class="btn" data-mcopy="'+m.id+'">📋 Copiar acta</button>'+
+      '<button class="btn" data-mdown="'+m.id+'">⬇ Descargar</button>'+
+      '<button class="btn primary" data-medit="'+m.id+'">Editar</button></div></div></div>';
+}
+function modalMinutaForm(id){
+  var m=id?minuta(id):null;
+  var t=today();
+  var asisTxt=m?(m.asistentes||[]).map(function(a){return a.nombre+(a.rol?" — "+a.rol:"");}).join("\n"):"";
+  var cmpTxt=m?(m.compromisos||[]).map(function(c){return [c.desc,c.responsable,c.fecha].join(" | ");}).join("\n"):"";
+  var pfOpts=['<option value="">— General —</option>'].concat(portafolios().map(function(p){
+    return '<option'+(m&&m.portafolio===p?' selected':'')+'>'+esc(p)+'</option>';})).join("");
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>'+(m?"Editar minuta":"Nueva minuta")+'</h3>'+
+    '<div class="sub">'+(m?esc(m.id):"Completa los campos y se generará el acta formateada")+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<div class="field"><label>Título de la reunión</label><input id="m-tit" value="'+esc(m?m.titulo:"")+'" placeholder="Ej. Comité semanal — Planta Concentradora"></div>'+
+      '<div style="margin:-4px 0 14px"><button class="btn sm" data-mai="1" type="button">✨ Autocompletar acuerdos y compromisos con IA</button>'+
+      '<div class="aihint">Escribe las notas crudas de la reunión en el campo <b>Notas</b> (más abajo) y pulsa este botón. Requiere el servidor con IA.</div></div>'+
+      '<div class="fgrid3">'+
+        '<div class="field"><label>Fecha</label><input type="date" id="m-fec" value="'+(m?m.fecha:iso(t))+'"></div>'+
+        '<div class="field"><label>Hora</label><input id="m-hor" value="'+esc(m?m.hora:"09:00")+'" placeholder="09:00"></div>'+
+        '<div class="field"><label>Modalidad</label><select id="m-mod">'+
+          ["Presencial","Virtual (Teams)","Híbrida"].map(function(x){return '<option'+(m&&m.modalidad===x?' selected':'')+'>'+x+'</option>';}).join("")+
+        '</select></div>'+
+      '</div>'+
+      '<div class="fgrid">'+
+        '<div class="field"><label>Lugar / enlace</label><input id="m-lug" value="'+esc(m?m.lugar:"")+'" placeholder="Sala Yanacancha / Teams"></div>'+
+        '<div class="field"><label>Portafolio</label><select id="m-pf">'+pfOpts+'</select></div>'+
+      '</div>'+
+      '<div class="field"><label>Asistentes</label><textarea id="m-asi" placeholder="Un asistente por línea">'+esc(asisTxt)+'</textarea>'+
+        '<div class="hint">Formato: Nombre — Rol (uno por línea)</div></div>'+
+      '<div class="field"><label>Agenda</label><textarea id="m-age" placeholder="Un punto por línea">'+esc(m?(m.agenda||[]).join("\n"):"")+'</textarea>'+
+        '<div class="hint">Un punto de agenda por línea</div></div>'+
+      '<div class="field"><label>Acuerdos</label><textarea id="m-acu" placeholder="Un acuerdo por línea">'+esc(m?(m.acuerdos||[]).join("\n"):"")+'</textarea>'+
+        '<div class="hint">Un acuerdo por línea</div></div>'+
+      '<div class="field"><label>Compromisos</label><textarea id="m-cmp" placeholder="Descripción | Responsable | 2026-07-31">'+esc(cmpTxt)+'</textarea>'+
+        '<div class="hint">Formato: Descripción | Responsable | Fecha (AAAA-MM-DD) — uno por línea</div></div>'+
+      '<div class="field"><label>Notas</label><textarea id="m-not" style="min-height:60px">'+esc(m?m.notas:"")+'</textarea></div>'+
+      '<p class="note" id="m-err" style="color:var(--crit);display:none"></p>'+
+    '</div>'+
+    '<div class="modal-f"><button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-msave="'+(m?m.id:"")+'">'+(m?"Guardar cambios":"Generar minuta")+'</button></div></div></div>';
+}
+function saveMinuta(id){
+  var tit=document.getElementById("m-tit").value.trim();
+  var err=document.getElementById("m-err");
+  if(!tit){err.textContent="Indica el título de la reunión.";err.style.display="block";return;}
+  var prev=id?minuta(id):null;
+  var asis=lines(document.getElementById("m-asi").value).map(function(l){
+    var p=l.split(/\s+[—|-]\s+|\|/);return {nombre:(p[0]||"").trim(),rol:(p[1]||"").trim()};});
+  var cmp=lines(document.getElementById("m-cmp").value).map(function(l){
+    var p=l.split("|").map(function(x){return x.trim();});
+    var old=prev&&(prev.compromisos||[]).filter(function(c){return c.desc===p[0];})[0];
+    return {id:old?old.id:uid("cp"),desc:p[0]||"",responsable:p[1]||"",fecha:p[2]||"",estado:old?old.estado:"pendiente"};
+  }).filter(function(c){return c.desc;});
+  var obj={
+    id:id||("M-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100)),
+    titulo:tit,
+    fecha:document.getElementById("m-fec").value||iso(today()),
+    hora:document.getElementById("m-hor").value.trim(),
+    modalidad:document.getElementById("m-mod").value,
+    lugar:document.getElementById("m-lug").value.trim(),
+    portafolio:document.getElementById("m-pf").value,
+    asistentes:asis,
+    agenda:lines(document.getElementById("m-age").value),
+    acuerdos:lines(document.getElementById("m-acu").value),
+    compromisos:cmp,
+    notas:document.getElementById("m-not").value.trim()
+  };
+  guardarMinutaObj(obj,!!id);
+  state.modal={type:"mview",id:obj.id};render();
+}
+function copiarActa(id){
+  var t=actaTexto(minuta(id));
+  function fb(){try{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("Acta copiada");}catch(e){toast("No se pudo copiar aquí");}}
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("Acta copiada");},fb);
+    else fb();
+  }catch(e){fb();}
+}
+function descargarActa(id){
+  var m=minuta(id);
+  try{
+    var blob=new Blob([actaTexto(m)],{type:"text/plain;charset=utf-8"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");a.href=url;a.download="Acta_"+String(m.titulo||m.id).replace(/[^\w]+/g,"_")+".txt";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    toast("Acta descargada");
+  }catch(e){toast("Descarga no disponible aquí — usa Copiar");}
+}
+
+/* ============ PERSISTENCIA DE MINUTAS ============ */
+function guardarMinutaObj(obj,esEdicion){
+  var found=false;
+  for(var i=0;i<DB.minutas.length;i++)if(DB.minutas[i].id===obj.id){DB.minutas[i]=obj;found=true;}
+  if(!found)DB.minutas.push(obj);
+  save();
+  if(API.on){
+    apiPost("/api/minutas",obj).then(function(j){
+      if(j&&j.id&&j.id!==obj.id){obj.id=j.id;save();}
+      API.stats=j.db||API.stats;
+      toast(esEdicion?"Acta actualizada en la base de datos":"Acta guardada en la base de datos");
+      render();
+    }).catch(function(){toast("Guardada solo en este navegador (sin base de datos)");});
+  }else toast(esEdicion?"Minuta actualizada":"Minuta generada");
+}
+function minutaDesdeTranscripcion(tid){
+  if(!LLM.on){toast("Requiere IA: ejecuta servidor.py");return;}
+  var t=transcripcion(tid);
+  if(!t||!t.texto){toast("La transcripción no tiene texto cargado");return;}
+  var btn=document.querySelector("[data-tmin]");
+  if(btn){btn.textContent="Redactando acta…";btn.disabled=true;}
+  var NL=String.fromCharCode(10);
+  var sys="Eres asistente de actas de una PMO minera. A partir de la TRANSCRIPCION de la reunion, redacta el acta."+NL+
+    "Responde EXACTAMENTE con estas tres secciones y nada mas, en espanol:"+NL+
+    "AGENDA:"+NL+"- ..."+NL+"ACUERDOS:"+NL+"- ..."+NL+"COMPROMISOS:"+NL+"- Descripcion | Responsable | AAAA-MM-DD"+NL+
+    "No inventes datos que no esten en la transcripcion. Si falta un dato deja el campo vacio pero conserva las barras.";
+  fetchChat([{role:"system",content:sys},
+    {role:"user",content:"Reunion: "+t.titulo+" ("+t.fecha+")"+NL+NL+"TRANSCRIPCION:"+NL+t.texto.slice(0,14000)}],1500)
+  .then(function(r){
+    var txt=r.content||"";
+    var obj={id:"M-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100),
+      titulo:"Acta — "+String(t.titulo).split(" (transcripción)").join(""),
+      fecha:t.fecha,hora:"",modalidad:(t.origen==="Presencial"?"Presencial":"Virtual (Teams)"),
+      lugar:"",portafolio:t.portafolio||"",transcripcionId:t.id,
+      asistentes:String(t.participantes||"").split(",").map(function(x){return {nombre:x.trim(),rol:""};})
+        .filter(function(x){return x.nombre;}),
+      agenda:seccionIA(txt,"AGENDA"),acuerdos:seccionIA(txt,"ACUERDOS"),
+      compromisos:seccionIA(txt,"COMPROMISOS").map(function(l){
+        var p=l.split("|").map(function(x){return x.trim();});
+        return {id:uid("cp"),desc:p[0]||"",responsable:p[1]||"",fecha:p[2]||"",estado:"pendiente"};
+      }).filter(function(c){return c.desc;}),
+      notas:"Generada automáticamente desde la transcripción "+t.id+"."};
+    guardarMinutaObj(obj,false);
+    state.tool="minutas";state.mtab="lista";state.modal={type:"mview",id:obj.id};render();
+  }).catch(function(){toast("No se pudo generar el acta con IA");})
+  .then(function(){var b=document.querySelector("[data-tmin]");
+    if(b){b.textContent="✨ Generar minuta con IA";b.disabled=false;}});
+}
+
+/* ============ BUSQUEDA EN EL HISTORICO ============ */
+var VACIAS=["que","como","para","por","los","las","del","una","uno","con","cual","cuales",
+  "esta","este","hay","son","cuando","donde","quien","quienes","sobre","todos","todas"];
+function textoDeMinuta(m){
+  var NL=String.fromCharCode(10),L=[m.titulo||""];
+  var asis=(m.asistentes||[]).map(function(a){return a.nombre+(a.rol?" ("+a.rol+")":"");});
+  if(asis.length)L.push("Asistentes: "+asis.join(", "));
+  if((m.agenda||[]).length)L.push("Agenda: "+m.agenda.join(" | "));
+  if((m.acuerdos||[]).length)L.push("Acuerdos: "+m.acuerdos.join(" | "));
+  if((m.compromisos||[]).length)L.push("Compromisos: "+m.compromisos.map(function(c){
+    return c.desc+" -> "+(c.responsable||"sin responsable")+" ("+(c.fecha||"sin fecha")+")";}).join(" | "));
+  if(m.notas)L.push("Notas: "+m.notas);
+  return L.join(NL);
+}
+function buscarLocal(q){
+  var toks=norm(q).split(/[^a-z0-9]+/).filter(function(t){return t.length>2&&VACIAS.indexOf(t)<0;});
+  if(!toks.length)return [];
+  var docs=[];
+  (DB.minutas||[]).forEach(function(m){docs.push({id:m.id,tipo:"minuta",titulo:m.titulo,
+    fecha:m.fecha,portafolio:m.portafolio,texto:textoDeMinuta(m)});});
+  (DB.transcripciones||[]).forEach(function(t){docs.push({id:t.id,tipo:"transcripcion",titulo:t.titulo,
+    fecha:t.fecha,portafolio:t.portafolio,texto:t.texto||""});});
+  var out=[];
+  docs.forEach(function(d){
+    var nt=norm(d.texto+" "+d.titulo);
+    var hits=toks.filter(function(t){return nt.indexOf(t)>=0;});
+    if(!hits.length)return;
+    var pos=Math.max(0,nt.indexOf(hits[0])-90);
+    out.push({docId:d.id,tipo:d.tipo,titulo:d.titulo,fecha:d.fecha,portafolio:d.portafolio,
+      extracto:(pos>0?"…":"")+(d.texto||"").substr(pos,240)+"…",score:hits.length});
+  });
+  out.sort(function(a,b){return b.score-a.score;});
+  return out.slice(0,10);
+}
+function ejecutarBusqueda(){
+  var q=((document.getElementById("q-hist")||{}).value||"").trim();
+  state.busq.q=q;
+  if(!q){state.busq.res=null;render();return;}
+  if(API.on){
+    state.busq.cargando=true;render();
+    apiGet("/api/buscar?q="+encodeURIComponent(q)+"&limite=10").then(function(j){
+      state.busq.res=j.resultados||[];state.busq.cargando=false;render();
+    }).catch(function(){state.busq.res=buscarLocal(q);state.busq.cargando=false;render();});
+    return;
+  }
+  state.busq.res=buscarLocal(q);render();
+}
+function extractoHtml(x){
+  return esc(x||"").split("&lt;&lt;").join("<mark>").split("&gt;&gt;").join("</mark>");
+}
+function abrirResultado(id){
+  if(String(id).charAt(0)==="T")abrirTranscripcion(id);
+  else{state.modal={type:"mview",id:id};renderModal();}
+}
+function resultadosHTML(){
+  var r=state.busq.res;
+  if(state.busq.cargando)return '<div class="empty">Buscando en el histórico…</div>';
+  if(r===null)return '<div class="empty"><div class="e-ic">🔎</div>Escribe qué buscas: un acuerdo, un riesgo, un nombre o un tema.<br>Se busca dentro de todas las actas y transcripciones.</div>';
+  if(!r.length)return '<div class="empty"><div class="e-ic">🗒️</div>Sin coincidencias para «'+esc(state.busq.q)+'».</div>';
+  return '<div class="note" style="margin-bottom:10px">'+r.length+' coincidencia(s) para «'+esc(state.busq.q)+'»'+
+    (API.on?' · búsqueda de texto completo en la base de datos':' · búsqueda local en este navegador')+'</div>'+
+    r.map(function(x){
+      return '<div class="hitrow" data-hit="'+esc(x.docId)+'">'+
+        pill(x.tipo==="minuta"?"copper":"info",x.tipo==="minuta"?"Acta":"Transcripción")+
+        '<div style="flex:1"><div class="ht">'+esc(x.titulo)+'</div>'+
+        '<div class="hx">'+extractoHtml(x.extracto)+'</div>'+
+        '<div class="hm">'+esc(x.docId)+' · '+fmt(x.fecha)+' · '+esc(x.portafolio||"General")+'</div></div></div>';
+    }).join("");
+}
+
+/* ============ TRANSCRIPCIONES ============ */
+function transcripcion(id){var ts=DB.transcripciones||[];for(var i=0;i<ts.length;i++)if(ts[i].id===id)return ts[i];return null;}
+function fragsDe(t){return t.fragmentos||Math.max(1,Math.ceil(((t.texto||"").length)/900));}
+function renderTranscripciones(){
+  var ts=(DB.transcripciones||[]).slice().sort(function(a,b){return pd(b.fecha)-pd(a.fecha);});
+  var totFrag=ts.reduce(function(s,t){return s+fragsDe(t);},0);
+  var totChar=ts.reduce(function(s,t){return s+(t.caracteres||(t.texto||"").length);},0);
+  var pfs={};ts.forEach(function(t){if(t.portafolio)pfs[t.portafolio]=1;});
+  var cards=ts.map(function(t){
+    return '<div class="mcard" data-topen="'+esc(t.id)+'">'+
+      '<div class="mt">'+esc(t.titulo)+'</div>'+
+      '<div class="mm">'+esc(t.id)+' · '+fmtL(t.fecha)+' · '+esc(t.origen||"manual")+'</div>'+
+      '<div style="font-size:13px;color:var(--ink-soft)">'+esc(t.participantes||"Sin participantes registrados")+'</div>'+
+      '<div class="mfoot">'+pill("muted",esc(t.portafolio||"General"))+
+        pill("info",fragsDe(t)+" fragmentos indexados")+'</div></div>';
+  }).join("");
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>Transcripciones de reuniones</h2>'+
+    '<div class="sub">Fuente histórica que alimenta al Asistente PMO</div></div>'+
+    '<div class="spacer"></div>'+
+    (API.on?'<span class="dbchip">🗄️ Base de datos activa</span>':'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
+    '<button class="btn primary sm" data-tnew="1" style="margin-left:10px">＋ Nueva transcripción</button></div>'+
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+ts.length+'</div><div class="l">Transcripciones</div></div>'+
+      '<div class="kpi i"><div class="n tnum">'+totFrag+'</div><div class="l">Fragmentos indexados</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+Math.round(totChar/1000)+'k</div><div class="l">Caracteres de contexto</div></div>'+
+      '<div class="kpi w"><div class="n tnum">'+Object.keys(pfs).length+'</div><div class="l">Portafolios cubiertos</div></div>'+
+    '</div>'+
+    (cards?'<div class="mgrid">'+cards+'</div>':
+      '<div class="card"><div class="empty"><div class="e-ic">🎙️</div>Aún no hay transcripciones.<br>Pega la transcripción de una reunión y el Asistente podrá responder con ella.</div></div>');
+}
+function abrirTranscripcion(id){
+  var t=transcripcion(id);
+  if(t&&!t.texto&&API.on){
+    state.modal={type:"tview",id:id,cargando:true};renderModal();
+    apiGet("/api/transcripciones?id="+encodeURIComponent(id)).then(function(j){
+      if(j&&j.texto){t.texto=j.texto;save();}
+      state.modal={type:"tview",id:id};renderModal();
+    }).catch(function(){state.modal={type:"tview",id:id};renderModal();});
+    return;
+  }
+  state.modal={type:"tview",id:id};renderModal();
+}
+function modalTransView(id){
+  var t=transcripcion(id);if(!t)return "";
+  var cuerpo=state.modal&&state.modal.cargando?'<div class="empty">Cargando transcripción…</div>':
+    '<div class="trans-txt">'+esc(t.texto||"(sin texto)")+'</div>';
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>'+esc(t.titulo)+'</h3><div class="sub">'+esc(t.id)+' · '+fmtL(t.fecha)+' · '+esc(t.portafolio||"General")+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<div class="detail-grid" style="margin-bottom:14px">'+
+        '<div class="kv"><div class="k">Participantes</div><div class="v" style="font-size:13px">'+esc(t.participantes||"—")+'</div></div>'+
+        '<div class="kv"><div class="k">Indexado</div><div class="v" style="font-size:13px">'+fragsDe(t)+' fragmentos · '+esc(t.origen||"manual")+'</div></div>'+
+      '</div>'+cuerpo+
+      '<p class="note">El Asistente PMO busca dentro de este texto para responder y citar la fuente.</p>'+
+    '</div>'+
+    '<div class="modal-f"><button class="btn danger left" data-tdel="'+esc(t.id)+'">Eliminar</button>'+
+      '<button class="btn" data-tmin="'+esc(t.id)+'">✨ Generar minuta con IA</button>'+
+      '<button class="btn primary" data-close="1">Cerrar</button></div></div></div>';
+}
+function modalTransForm(){
+  var pfOpts=['<option value="">— General —</option>'].concat(portafolios().map(function(p){
+    return '<option>'+esc(p)+'</option>';})).join("");
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>Nueva transcripción</h3><div class="sub">Pega el texto de la reunión; se indexará para búsqueda y para el Asistente</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<div class="field"><label>Título</label><input id="t-tit" placeholder="Ej. Comité semanal — Operaciones Mina"></div>'+
+      '<div class="fgrid3">'+
+        '<div class="field"><label>Fecha</label><input type="date" id="t-fec" value="'+iso(today())+'"></div>'+
+        '<div class="field"><label>Portafolio</label><select id="t-pf">'+pfOpts+'</select></div>'+
+        '<div class="field"><label>Origen</label><select id="t-org"><option>Teams</option><option>Presencial</option><option>Zoom</option><option>Notas manuales</option></select></div>'+
+      '</div>'+
+      '<div class="field"><label>Participantes</label><input id="t-par" placeholder="Nombres separados por coma"></div>'+
+      '<div class="field"><label>Transcripción</label><textarea id="t-txt" style="min-height:220px" placeholder="Pega aquí la transcripción completa de la reunión…"></textarea>'+
+      '<div class="hint">Puede ser la transcripción automática de Teams. Se divide en fragmentos para poder buscarla.</div></div>'+
+      '<p class="note" id="t-err" style="color:var(--crit);display:none"></p>'+
+    '</div>'+
+    '<div class="modal-f"><button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-tsave="1">Guardar e indexar</button></div></div></div>';
+}
+function guardarTranscripcion(){
+  var tit=((document.getElementById("t-tit")||{}).value||"").trim();
+  var txt=((document.getElementById("t-txt")||{}).value||"").trim();
+  var err=document.getElementById("t-err");
+  if(!tit){err.textContent="Indica un título.";err.style.display="block";return;}
+  if(txt.length<40){err.textContent="La transcripción es muy corta (mínimo 40 caracteres).";err.style.display="block";return;}
+  var obj={titulo:tit,fecha:document.getElementById("t-fec").value||iso(today()),
+    portafolio:document.getElementById("t-pf").value,
+    participantes:(document.getElementById("t-par")||{}).value||"",
+    origen:document.getElementById("t-org").value,texto:txt,caracteres:txt.length};
+  if(API.on){
+    apiPost("/api/transcripciones",obj).then(function(j){
+      obj.id=j.id;obj.fragmentos=j.fragmentos;API.stats=j.db||API.stats;
+      DB.transcripciones.push(obj);save();state.modal=null;
+      toast("Transcripción indexada ("+j.fragmentos+" fragmentos)");render();
+    }).catch(function(){toast("No se pudo guardar en la base de datos");});
+    return;
+  }
+  obj.id="T-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100);
+  obj.fragmentos=Math.max(1,Math.ceil(txt.length/900));
+  DB.transcripciones.push(obj);save();state.modal=null;
+  toast("Transcripción guardada en este navegador");render();
+}
+function borrarTranscripcion(id){
+  DB.transcripciones=(DB.transcripciones||[]).filter(function(t){return t.id!==id;});
+  save();
+  if(API.on)apiPost("/api/transcripciones/eliminar",{id:id}).then(refrescarStats).catch(function(){});
+  state.modal=null;toast("Transcripción eliminada");render();
+}
+
+/* ============ ASISTENTE ============ */
+var SUGS=["¿Cómo van los proyectos?","¿Qué proyectos están en rojo?",
+  "¿Por qué se retrasó la molienda SAG?","¿Qué se acordó sobre el repuesto crítico?",
+  "¿Qué dijo TI sobre los accesos a Dataverse?","¿Cuál es el riesgo del permiso sectorial?",
+  "¿Quién cubre a Carla y qué debe recibir?","Compromisos pendientes",
+  "¿Cuáles son los próximos hitos?"];
+function semDot(s){return '<span class="sem '+s+'"></span>';}
+function proyRow(p){
+  var r=byId(p.respId);
+  return '<div class="prow">'+semDot(p.semaforo)+'<span class="pn">'+esc(p.nombre)+'</span>'+
+    '<span class="mini tnum">'+p.avance+'%</span><span class="mini">'+esc(r?r.ini:"")+'</span></div>';
+}
+function matchProyectos(nq){
+  return DB.proyectos.filter(function(p){
+    var n=norm(p.nombre);
+    if(nq.indexOf(n)>=0)return true;
+    var toks=n.split(/[^a-z0-9]+/).filter(function(w){return w.length>4;});
+    return toks.some(function(w){return nq.indexOf(w)>=0;});
+  });
+}
+function matchPortafolio(nq){
+  var found=null;
+  portafolios().forEach(function(p){
+    var n=norm(p);
+    if(nq.indexOf(n)>=0){found=p;return;}
+    var toks=n.split(/[^a-z0-9]+/).filter(function(w){return w.length>4;});
+    if(toks.some(function(w){return nq.indexOf(w)>=0;}))found=p;
+  });
+  return found;
+}
+function matchConsultor(nq){
+  var f=null;
+  DB.consultores.forEach(function(c){
+    norm(c.nombre).split(" ").forEach(function(w){if(w.length>3&&nq.indexOf(w)>=0)f=c;});
+  });
+  return f;
+}
+function ansProyecto(p){
+  var r=byId(p.respId),s=SEM[p.semaforo];
+  var ries=p.riesgos.length?'<ul>'+p.riesgos.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>':'<p class="mini">Sin riesgos abiertos.</p>';
+  return '<p><b>'+esc(p.nombre)+'</b> — '+pill(s.pill,s.label)+'</p>'+
+    '<p class="mini">Portafolio: '+esc(p.portafolio)+' · Responsable: '+esc(r?r.nombre:"—")+' · Actualizado: '+fmt(p.act)+'</p>'+
+    '<div class="pbar" style="margin:10px 0 4px"><i style="width:'+p.avance+'%"></i></div>'+
+    '<p class="mini">Avance <b>'+p.avance+'%</b> · Próximo hito: <b>'+esc(p.hito)+'</b> ('+fmt(p.fechaHito)+') · Presupuesto: <b>'+esc(p.presupuesto)+'</b> · CAPEX ejecutado '+p.capex+'%</p>'+
+    '<p style="margin-top:8px"><b>Riesgos:</b></p>'+ries;
+}
+function ansPortafolio(port){
+  var ps=DB.proyectos.filter(function(p){return p.portafolio===port;});
+  var r=consultores().filter(function(c){return c.portafolio===port;})[0];
+  var aus=proximas().filter(function(a){return r&&a.consultorId===r.id;})[0];
+  var cob="";
+  if(aus){var rel=aus.relevoId?byId(aus.relevoId):null;
+    cob='<p class="mini" style="margin-top:8px">⚠️ '+esc(r.nombre)+' tiene '+TIPOS[aus.tipo].label.toLowerCase()+' del '+fmt(aus.fechaInicio)+' al '+fmt(aus.fechaFin)+
+      (rel?'. Lo cubre <b>'+esc(rel.nombre)+'</b>.':'. <b>Aún sin relevo asignado.</b>')+'</p>';}
+  var avg=ps.length?Math.round(ps.reduce(function(s,p){return s+p.avance;},0)/ps.length):0;
+  return '<p>Portafolio <b>'+esc(port)+'</b> — '+ps.length+' proyectos, avance promedio <b>'+avg+'%</b>.'+
+    (r?' Responsable: <b>'+esc(r.nombre)+'</b>.':'')+'</p>'+
+    '<div style="margin-top:8px">'+ps.map(proyRow).join("")+'</div>'+cob;
+}
+function ansResumen(){
+  var v=DB.proyectos.filter(function(p){return p.semaforo==="verde";}).length;
+  var a=DB.proyectos.filter(function(p){return p.semaforo==="ambar";}).length;
+  var r=DB.proyectos.filter(function(p){return p.semaforo==="rojo";}).length;
+  var avg=Math.round(DB.proyectos.reduce(function(s,p){return s+p.avance;},0)/DB.proyectos.length);
+  var aten=DB.proyectos.filter(function(p){return p.semaforo!=="verde";});
+  return '<p>Tenemos <b>'+DB.proyectos.length+' proyectos</b> en '+portafolios().length+' portafolios, con un avance promedio del <b>'+avg+'%</b>.</p>'+
+    '<p style="margin-top:6px">'+pill("ok",v+" en verde")+' '+pill("warn",a+" en ámbar")+' '+pill("crit",r+" en rojo")+'</p>'+
+    '<p style="margin-top:10px"><b>Requieren atención:</b></p><div>'+aten.map(proyRow).join("")+'</div>';
+}
+function ansSemaforo(sem){
+  var ps=DB.proyectos.filter(function(p){return p.semaforo===sem;});
+  if(!ps.length)return '<p>Buenas noticias: no hay proyectos '+esc(sem)+' en este momento. 🎉</p>';
+  return '<p>Hay <b>'+ps.length+'</b> proyecto'+(ps.length>1?'s':'')+' '+pill(SEM[sem].pill,SEM[sem].label)+':</p>'+
+    ps.map(function(p){
+      var r=byId(p.respId);
+      return '<p style="margin-top:10px"><b>'+esc(p.nombre)+'</b> ('+esc(p.portafolio)+', '+esc(r?r.nombre:"—")+') — avance '+p.avance+'%.'+
+        (p.riesgos.length?' Riesgo principal: <i>'+esc(p.riesgos[0])+'</i>.':'')+'</p>';
+    }).join("");
+}
+function ansRiesgos(proy,port){
+  var scope=proy.length?proy:(port?DB.proyectos.filter(function(p){return p.portafolio===port;}):DB.proyectos);
+  var out=[];
+  scope.forEach(function(p){p.riesgos.forEach(function(r){out.push({p:p,r:r});});});
+  if(!out.length)return '<p>No hay riesgos abiertos registrados'+(port?' en <b>'+esc(port)+'</b>':'')+'. ✅</p>';
+  return '<p>Hay <b>'+out.length+' riesgos abiertos</b>'+(port?' en <b>'+esc(port)+'</b>':(proy.length?' en <b>'+esc(proy[0].nombre)+'</b>':' en total'))+':</p><ul>'+
+    out.map(function(x){return '<li>'+semDot(x.p.semaforo)+' <b>'+esc(x.p.nombre)+':</b> '+esc(x.r)+'</li>';}).join("")+'</ul>';
+}
+function ansHitos(proy,port){
+  var t=today();
+  var scope=proy.length?proy:(port?DB.proyectos.filter(function(p){return p.portafolio===port;}):DB.proyectos);
+  var hs=scope.filter(function(p){return pd(p.fechaHito)>=t;}).sort(function(a,b){return pd(a.fechaHito)-pd(b.fechaHito);});
+  if(!hs.length)return '<p>No hay hitos futuros registrados en ese alcance.</p>';
+  return '<p><b>Próximos hitos</b> (más cercanos primero):</p><ul>'+hs.slice(0,8).map(function(p){
+    var d=diasEntre(t,pd(p.fechaHito));
+    return '<li>'+semDot(p.semaforo)+' <b>'+esc(p.hito)+'</b> — '+esc(p.nombre)+' · '+fmt(p.fechaHito)+' <span class="mini">(en '+d+' días)</span></li>';
+  }).join("")+'</ul>';
+}
+function ansPresupuesto(proy,port){
+  var scope=proy.length?proy:(port?DB.proyectos.filter(function(p){return p.portafolio===port;}):DB.proyectos);
+  return '<p><b>Presupuesto y CAPEX</b>'+(port?' — '+esc(port):'')+':</p><ul>'+scope.map(function(p){
+    return '<li><b>'+esc(p.nombre)+':</b> '+esc(p.presupuesto)+' · CAPEX ejecutado <b>'+p.capex+'%</b></li>';
+  }).join("")+'</ul>';
+}
+function ansAvance(proy,port){
+  if(proy.length===1)return ansProyecto(proy[0]);
+  var scope=proy.length?proy:(port?DB.proyectos.filter(function(p){return p.portafolio===port;}):DB.proyectos);
+  var avg=Math.round(scope.reduce(function(s,p){return s+p.avance;},0)/scope.length);
+  return '<p>Avance promedio: <b>'+avg+'%</b>'+(port?' en <b>'+esc(port)+'</b>':'')+'.</p><div style="margin-top:8px">'+scope.map(proyRow).join("")+'</div>';
+}
+function ansAusencias(nq,cons){
+  var t=today(),prox=proximas();
+  if(cons){
+    var mias=prox.filter(function(a){return a.consultorId===cons.id;});
+    var cubro=prox.filter(function(a){return a.relevoId===cons.id;});
+    var out='<p><b>'+esc(cons.nombre)+'</b> — '+esc(cons.portafolio)+'</p>';
+    if(mias.length){
+      out+=mias.map(function(a){
+        var rel=a.relevoId?byId(a.relevoId):null,st=estadoRelevo(a);
+        return '<p style="margin-top:8px">'+TIPOS[a.tipo].label+' del <b>'+fmt(a.fechaInicio)+'</b> al <b>'+fmt(a.fechaFin)+'</b> ('+diasHab(a.fechaInicio,a.fechaFin)+' días háb.).<br>'+
+          (rel?'Lo cubre <b>'+esc(rel.nombre)+'</b>. ':'<b>Sin relevo asignado.</b> ')+pill(st.pill,st.label)+
+          (a.accesos&&a.accesos.length?' '+pill(accesosOk(a)?"ok":"warn","Accesos "+accesosOtorgados(a)+"/"+a.accesos.length):'')+
+          (a.relevoId?' '+pill(chkPct(a)>=DB.cfg.umbral?"ok":"warn","Traspaso "+chkPct(a)+"%"):'')+'</p>';
+      }).join("");
+    }else out+='<p class="mini">No tiene ausencias próximas registradas.</p>';
+    if(cubro.length)out+='<p style="margin-top:8px">Además, <b>cubrirá</b> a '+cubro.map(function(a){return esc(byId(a.consultorId).nombre)+' ('+fmt(a.fechaInicio)+'–'+fmt(a.fechaFin)+')';}).join(", ")+'.</p>';
+    return out;
+  }
+  if(!prox.length)return '<p>No hay ausencias próximas registradas.</p>';
+  return '<p><b>Próximas ausencias</b> del equipo:</p><ul>'+prox.map(function(a){
+    var c=byId(a.consultorId),rel=a.relevoId?byId(a.relevoId):null,d=diasEntre(t,pd(a.fechaInicio));
+    return '<li><b>'+esc(c.nombre)+'</b> ('+esc(c.portafolio)+') — '+TIPOS[a.tipo].label+' '+fmt(a.fechaInicio)+'–'+fmt(a.fechaFin)+
+      ' <span class="mini">'+(d>0?"en "+d+" días":"en curso")+'</span><br>'+(rel?'Relevo: <b>'+esc(rel.nombre)+'</b>':'<b style="color:var(--crit)">Sin relevo</b>')+'</li>';
+  }).join("")+'</ul>';
+}
+function ansCompromisos(proy,port){
+  var ab=compromisosAbiertos();
+  if(port)ab=ab.filter(function(x){return x.m.portafolio===port;});
+  if(!ab.length)return '<p>No hay compromisos abiertos'+(port?' en <b>'+esc(port)+'</b>':'')+'. ✅</p>';
+  var t=today();
+  return '<p>Hay <b>'+ab.length+' compromisos abiertos</b>'+(port?' en <b>'+esc(port)+'</b>':'')+':</p><ul>'+ab.map(function(x){
+    var venc=x.c.fecha&&pd(x.c.fecha)<t;
+    return '<li>'+esc(x.c.desc)+'<br><span class="mini">'+esc(x.c.responsable||"—")+' · vence '+fmt(x.c.fecha)+' · '+esc(x.m.titulo)+'</span> '+
+      (venc?pill("crit","Vencido"):pill(cmpEstado(x.c.estado)[0],cmpEstado(x.c.estado)[1]))+'</li>';
+  }).join("")+'</ul>';
+}
+function ansAyuda(){
+  return '<p>Puedo responderte sobre:</p><ul>'+
+    '<li><b>Estado</b> de un proyecto o portafolio</li>'+
+    '<li><b>Riesgos</b> abiertos</li>'+
+    '<li><b>Hitos</b> próximos</li>'+
+    '<li><b>Presupuesto</b> y CAPEX</li>'+
+    '<li><b>Ausencias</b> y quién cubre a quién</li>'+
+    '<li><b>Compromisos</b> pendientes de las minutas</li></ul>'+
+    '<p style="margin-top:8px">Prueba: <i>«¿Qué proyectos están en rojo?»</i> o <i>«¿Quién cubre a Carla?»</i></p>';
+}
+function ansFallback(){
+  return '<p>No estoy seguro de haber entendido. 🤔</p><p>Puedo ayudarte con <b>estado de proyectos</b>, <b>riesgos</b>, <b>hitos</b>, <b>presupuesto</b>, <b>ausencias y relevos</b> o <b>compromisos</b>. Usa las sugerencias de la derecha o pregunta por el nombre de un proyecto o portafolio.</p>';
+}
+function responder(q){
+  var nq=norm(q);
+  var proy=matchProyectos(nq),port=matchPortafolio(nq),cons=matchConsultor(nq);
+  if(/\b(hola|buenas|ayuda|que puedes|qué puedes|gracias)\b/.test(nq))return ansAyuda();
+  if(/vacacion|ausenc|relevo|cubre|cubrir|descanso|licencia/.test(nq))return ansAusencias(nq,cons);
+  if(/compromiso|acuerdo|tarea|accion|pendiente/.test(nq))return ansCompromisos(proy,port);
+  if(/riesg/.test(nq))return ansRiesgos(proy,port);
+  if(/hito|milestone|entregable/.test(nq))return ansHitos(proy,port);
+  if(/presupuesto|capex|costo|budget|inversion/.test(nq))return ansPresupuesto(proy,port);
+  if(/rojo|critico|en riesgo|retras|semaforo|atrasad/.test(nq))return ansSemaforo("rojo");
+  if(/ambar|amarillo/.test(nq))return ansSemaforo("ambar");
+  if(/avance|progreso|porcentaje/.test(nq))return ansAvance(proy,port);
+  if(proy.length===1)return ansProyecto(proy[0]);
+  if(proy.length>1&&!port)return '<p>Encontré varios proyectos que coinciden:</p><div>'+proy.map(proyRow).join("")+'</div><p class="mini" style="margin-top:8px">Pregúntame por uno en concreto.</p>';
+  if(port)return ansPortafolio(port);
+  if(cons)return ansAusencias(nq,cons);
+  if(/como van|resumen|general|todos|estado|proyecto|portafolio/.test(nq))return ansResumen();
+  return ansFallback();
+}
+var PROXY_URL="";
+var LLM={on:false,chatUrl:null,model:null,mode:null};
+var API={on:false,stats:null};
+function apiGet(p){return fetch(p).then(function(r){if(!r.ok)throw new Error("http");return r.json();});}
+function apiPost(p,b){return fetch(p,{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(b||{})}).then(function(r){if(!r.ok)throw new Error("http");return r.json();});}
+var SYS_PROMPT="Eres el Asistente PMO de Antamina, para consultores de la PMO (espanol de Peru). "+
+"Respondes dudas sobre el estado de los proyectos, riesgos, hitos, presupuesto/CAPEX, ausencias/relevos del equipo y compromisos de las minutas. "+
+"Usa EXCLUSIVAMENTE la informacion del bloque DATOS PMO; si algo no esta ahi, dilo con claridad y no lo inventes. "+
+"Se conciso y profesional, en terminos de negocio. Puedes usar **negritas** y listas con '- '. No inventes cifras ni nombres.";
+function mdToHtml(t){
+  var s=esc(t||"");s=s.replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");
+  var out=[],lst=[];
+  s.split(/\n/).forEach(function(ln){
+    var m=ln.match(/^\s*[-*•]\s+(.*)$/);
+    if(m){lst.push("<li>"+m[1]+"</li>");}
+    else{if(lst.length){out.push("<ul>"+lst.join("")+"</ul>");lst=[];}if(ln.trim())out.push("<p>"+ln+"</p>");}
+  });
+  if(lst.length)out.push("<ul>"+lst.join("")+"</ul>");
+  return out.join("")||"<p></p>";
+}
+function contextoPMO(){
+  var t=today(),L=[];
+  L.push("HOY: "+iso(t));
+  L.push("");L.push("PROYECTOS ("+DB.proyectos.length+"):");
+  DB.proyectos.forEach(function(p){var r=byId(p.respId);
+    L.push("- ["+p.id+"] "+p.nombre+" | Portafolio: "+p.portafolio+" | Responsable: "+(r?r.nombre:"-")+
+      " | Semaforo: "+p.semaforo+" | Avance: "+p.avance+"% | Proximo hito: "+p.hito+" ("+p.fechaHito+")"+
+      " | Presupuesto: "+p.presupuesto+" | CAPEX ejecutado: "+p.capex+"%"+
+      " | Riesgos: "+(p.riesgos.length?p.riesgos.join("; "):"ninguno")+" | Actualizado: "+p.act);});
+  L.push("");L.push("AUSENCIAS PROGRAMADAS:");
+  ordenadas().forEach(function(a){var c=byId(a.consultorId),rel=a.relevoId?byId(a.relevoId):null,st=estadoRelevo(a);
+    L.push("- "+c.nombre+" ("+c.portafolio+") | "+TIPOS[a.tipo].label+" "+a.fechaInicio+" a "+a.fechaFin+
+      " | Relevo: "+(rel?rel.nombre:"SIN RELEVO")+" | Estado: "+st.label+
+      (a.accesos&&a.accesos.length?" | Accesos: "+accesosOtorgados(a)+"/"+a.accesos.length:"")+
+      (a.relevoId?" | Traspaso: "+chkPct(a)+"%":""));});
+  L.push("");L.push("CONSULTORES:");
+  consultores().forEach(function(c){L.push("- "+c.nombre+" - "+c.portafolio+" | Vacaciones disponibles: "+(c.vacTotal-c.vacUsados)+" de "+c.vacTotal);});
+  L.push("");L.push("COMPROMISOS ABIERTOS (de minutas):");
+  var ab=compromisosAbiertos();
+  if(!ab.length)L.push("- (ninguno)");
+  ab.forEach(function(x){L.push("- ["+x.m.id+"] "+x.c.desc+" | Responsable: "+(x.c.responsable||"-")+" | Vence: "+(x.c.fecha||"-")+" | Estado: "+cmpEstado(x.c.estado)[1]+" | Reunion: "+x.m.titulo);});
+  return L.join("\n");
+}
+function buildMessages(q,histSource){
+  var msgs=[{role:"system",content:SYS_PROMPT+"\n\n=== DATOS PMO (usa solo esto) ===\n"+contextoPMO()}];
+  (histSource||[]).filter(function(m){return m.who==="user"||(m.who==="bot"&&m.raw);}).slice(-6).forEach(function(m){
+    msgs.push({role:m.who==="user"?"user":"assistant",content:m.who==="user"?m.text:m.raw});
+  });
+  msgs.push({role:"user",content:q});
+  return msgs;
+}
+function fetchChat(messages,maxTok,extra){
+  var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},95000);
+  var cuerpo={messages:messages,max_tokens:maxTok||1200,temperature:0.3};
+  if(extra)for(var k in extra)cuerpo[k]=extra[k];
+  return fetch(LLM.chatUrl||"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(cuerpo),signal:ctrl.signal})
+    .then(function(r){clearTimeout(to);if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+    .then(function(j){if(j.error)throw new Error(j.error);return j;});
+}
+function checkBackend(){
+  var cands=[{h:"/api/health",ch:"/api/chat",mode:"servidor",api:true}];
+  if(PROXY_URL){var p=PROXY_URL;while(p.charAt(p.length-1)==="/")p=p.slice(0,-1);
+    cands.push({h:p+"/health",ch:p+"/chat",mode:"nube",api:false});}
+  (function probar(i){
+    if(i>=cands.length){LLM.on=false;API.on=false;render();return;}
+    var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},4000);
+    fetch(cands[i].h,{signal:ctrl.signal}).then(function(r){clearTimeout(to);if(!r.ok)throw new Error("x");return r.json();})
+    .then(function(j){
+      if(j&&j.ok){
+        LLM.on=true;LLM.chatUrl=cands[i].ch;LLM.model=j.model;LLM.mode=cands[i].mode;
+        API.on=!!cands[i].api;API.stats=j.db||null;
+        if(API.on)cargarDeServidor();else render();
+      }else probar(i+1);
+    }).catch(function(){clearTimeout(to);probar(i+1);});
+  })(0);
+}
+function cargarDeServidor(){
+  Promise.all([apiGet("/api/minutas"),apiGet("/api/transcripciones")]).then(function(rs){
+    if(rs[0]&&rs[0].minutas)DB.minutas=rs[0].minutas;
+    if(rs[1]&&rs[1].transcripciones)DB.transcripciones=rs[1].transcripciones;
+    save();render();
+  }).catch(function(){render();});
+}
+function refrescarStats(){apiGet("/api/health").then(function(j){API.stats=j.db||null;}).catch(function(){});}
+function renderAsistente(){
+  var log=state.chat.map(function(m){
+    return '<div class="msg '+(m.who==="bot"?"bot":"user")+'"><div class="mav">'+(m.who==="bot"?"◆":"Tú")+'</div>'+
+      '<div class="bubble">'+(m.who==="bot"?m.html:'<p>'+esc(m.text)+'</p>')+'</div></div>';
+  }).join("");
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>Asistente PMO</h2>'+
+    '<div class="sub">Información consolidada de '+DB.proyectos.length+' proyectos, '+consultores().length+' consultores y '+DB.minutas.length+' minutas</div></div>'+
+    '<div class="spacer"></div>'+(LLM.on?pill("ok","IA conectada · "+esc((LLM.model||"DeepSeek").split("/").pop())):pill("muted","Modo local — inicia servidor.py para IA"))+'</div>'+
+    '<div class="chat-wrap"><div class="chat">'+
+      '<div class="chat-log" id="chatLog">'+log+'</div>'+
+      '<div class="chat-in"><input id="ai-input" placeholder="Pregunta por el estado de un proyecto, riesgos, hitos, ausencias…" autocomplete="off">'+
+      '<button class="btn primary" data-send="1">Enviar</button></div>'+
+    '</div>'+
+    '<div class="sug"><div class="st">Sugerencias</div>'+
+      SUGS.map(function(s){return '<button data-ask="'+esc(s)+'">'+esc(s)+'</button>';}).join("")+
+    '</div></div>';
+  var l=document.getElementById("chatLog");if(l)l.scrollTop=l.scrollHeight;
+  var i=document.getElementById("ai-input");if(i)i.focus();
+}
+function fuentesHTML(fu){
+  if(!fu||!fu.length)return "";
+  return '<div class="fuentes-lbl">Fuentes consultadas</div>'+fu.map(function(f){
+    return '<div class="src" data-hit="'+esc(f.id)+'"><span class="sn">'+f.n+'</span>'+
+      '<div><div class="st2">'+esc(f.titulo)+'</div>'+
+      '<div class="sx">'+extractoHtml(f.extracto)+'</div>'+
+      '<div class="sx">'+(f.tipo==="minuta"?"Acta":"Transcripción")+' '+esc(f.id)+' · '+fmt(f.fecha)+'</div>'+
+      '</div></div>';
+  }).join("");
+}
+function citasLocales(q){
+  var hits=buscarLocal(q).slice(0,3);
+  if(!hits.length)return "";
+  return '<div class="fuentes-lbl">Encontrado en el histórico</div>'+hits.map(function(x,i){
+    return '<div class="src" data-hit="'+esc(x.docId)+'"><span class="sn">'+(i+1)+'</span>'+
+      '<div><div class="st2">'+esc(x.titulo)+'</div><div class="sx">'+esc(x.extracto)+'</div></div></div>';
+  }).join("");
+}
+function preguntar(q){
+  q=String(q||"").trim();if(!q)return;
+  if(!LLM.on){
+    state.chat.push({who:"user",text:q});
+    state.chat.push({who:"bot",html:responder(q)+citasLocales(q),raw:""});
+    renderAsistente();return;
+  }
+  var histSource=state.chat.slice();
+  state.chat.push({who:"user",text:q});
+  var pend={who:"bot",html:'<span class="typing">Consultando el histórico<i></i><i></i><i></i></span>',raw:"",pending:true};
+  state.chat.push(pend);renderAsistente();
+  fetchChat(buildMessages(q,histSource),1200,API.on?{rag:true,q:q}:null).then(function(r){
+    var c=(r.content||"").trim()||"(sin respuesta)";
+    pend.html=mdToHtml(c)+fuentesHTML(r.fuentes);pend.raw=c;pend.pending=false;renderAsistente();
+  }).catch(function(){
+    pend.html='<div class="warnbar">No pude conectar con la IA; respondo con el motor local.</div>'+
+      responder(q)+citasLocales(q);
+    pend.raw="";pend.pending=false;renderAsistente();
+  });
+}
+
+/* ============ vacation modals ============ */
+function optionsConsultores(sel,incLider){
+  return DB.consultores.filter(function(c){return incLider||c.rol==="Consultor";}).map(function(c){
+    return '<option value="'+c.id+'"'+(sel===c.id?' selected':'')+'>'+esc(c.nombre)+' — '+esc(c.portafolio)+'</option>';
+  }).join("");
+}
+function modalForm(edit){
+  var a=edit?ausencia(edit):null,t=today();
+  return '<div class="overlay" data-close="1"><div class="modal"><div class="modal-h"><div style="flex:1"><h3>'+(a?'Editar ausencia':'Nueva ausencia')+'</h3>'+
+    '<div class="sub">'+(a?esc(a.id):'Vacaciones, descanso, licencia o capacitación')+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div><div class="modal-b">'+
+      '<div class="field"><label>Consultor</label><select id="f-consultor">'+optionsConsultores(a?a.consultorId:null,false)+'</select></div>'+
+      '<div class="fgrid">'+
+        '<div class="field"><label>Tipo</label><select id="f-tipo">'+Object.keys(TIPOS).map(function(k){return '<option value="'+k+'"'+(a&&a.tipo===k?' selected':'')+'>'+TIPOS[k].label+'</option>';}).join("")+'</select></div>'+
+        '<div class="field"><label>Estado</label><select id="f-estado">'+["Programada","Aprobada","Cerrada"].map(function(s){return '<option'+(a&&a.estado===s?' selected':(!a&&s==="Aprobada"?' selected':''))+'>'+s+'</option>';}).join("")+'</select></div></div>'+
+      '<div class="fgrid">'+
+        '<div class="field"><label>Fecha de inicio</label><input type="date" id="f-ini" value="'+(a?a.fechaInicio:iso(t))+'"></div>'+
+        '<div class="field"><label>Fecha de fin</label><input type="date" id="f-fin" value="'+(a?a.fechaFin:iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+7)))+'"></div></div>'+
+      '<p class="note" id="f-err" style="color:var(--crit);display:none"></p></div>'+
+    '<div class="modal-f">'+(a?'<button class="btn danger left" data-del="'+a.id+'">Eliminar</button>':'')+
+      '<button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-save="'+(a?a.id:'')+'">'+(a?'Guardar cambios':'Crear ausencia')+'</button></div></div></div>';
+}
+function saveForm(id){
+  var cid=document.getElementById("f-consultor").value,tipo=document.getElementById("f-tipo").value;
+  var estado=document.getElementById("f-estado").value,ini=document.getElementById("f-ini").value,fin=document.getElementById("f-fin").value;
+  var err=document.getElementById("f-err");
+  if(!ini||!fin){err.textContent="Indica ambas fechas.";err.style.display="block";return;}
+  if(pd(fin)<pd(ini)){err.textContent="La fecha de fin no puede ser anterior a la de inicio.";err.style.display="block";return;}
+  if(id){var a=ausencia(id);a.consultorId=cid;a.tipo=tipo;a.estado=estado;a.fechaInicio=ini;a.fechaFin=fin;toast("Ausencia actualizada");}
+  else{DB.ausencias.push({id:"A-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100),consultorId:cid,tipo:tipo,estado:estado,
+    fechaInicio:ini,fechaFin:fin,relevoId:null,responsablePmo:null,fechaLimiteAccesos:null,accesos:[],checklist:[]});toast("Ausencia creada");}
+  save();state.modal=null;render();
+}
+function modalDetail(id){
+  var a=ausencia(id),c=byId(a.consultorId),T=TIPOS[a.tipo],st=estadoRelevo(a);
+  var rel=a.relevoId?byId(a.relevoId):null,t=today(),dias=diasEntre(t,pd(a.fechaInicio));
+  var accBlock;
+  if(!a.relevoId)accBlock='<p class="note">Asigna un relevo y se generará el catálogo de accesos del portafolio.</p>';
+  else if(!a.accesos.length)accBlock='<button class="btn sm" data-genacc="'+a.id+'">⚙ Generar accesos desde la plantilla</button>';
+  else accBlock=a.accesos.map(function(x){
+    var m={pendiente:["crit","Pendiente"],tramite:["warn","En trámite"],otorgado:["ok","Otorgado"]}[x.estado];
+    return '<div class="acc-row"><div><div class="an">'+esc(x.sistema)+'</div><div class="ao">'+esc(x.tipo)+' · '+esc(x.responsable)+'</div></div>'+
+      '<div class="spacer"></div><button class="cyc" data-cyc="'+a.id+'|'+x.id+'" title="Clic para cambiar estado">'+pill(m[0],m[1])+'</button></div>';
+  }).join("");
+  var chkBlock="";
+  if(a.relevoId&&a.checklist.length){
+    var pct=chkPct(a);
+    chkBlock='<div class="sec-lbl">Checklist de traspaso</div><div class="chk-head"><div class="ring" style="--p:'+pct+'"><b class="tnum">'+pct+'%</b></div>'+
+      '<div><div style="font-weight:650">'+esc(c.nombre)+(rel?' → '+esc(rel.nombre):'')+'</div>'+
+      '<div class="note" style="font-style:normal">Umbral para “Listo”: '+DB.cfg.umbral+'%</div></div></div>'+
+      a.checklist.map(function(cat){
+        return '<div class="chk-cat"><div class="ct"><span class="ci">'+cat.ico+'</span>'+esc(cat.cat)+'</div><ul class="chk-list">'+
+          cat.items.map(function(i){return '<li class="'+(i.done?'done':'')+'" data-chk="'+a.id+'|'+i.id+'"><span class="chk-box">✓</span><span class="txt">'+esc(i.txt)+'</span><span class="tag">'+esc(i.tag)+'</span></li>';}).join("")+'</ul></div>';
+      }).join("");
+  }else if(a.relevoId)chkBlock='<div class="sec-lbl">Checklist de traspaso</div><button class="btn sm" data-genchk="'+a.id+'">⚙ Generar checklist</button>';
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+avatar(c,40)+
+    '<div style="flex:1"><h3>'+esc(c.nombre)+' · '+T.label+'</h3><div class="sub">'+esc(a.id)+' · '+esc(c.portafolio)+'</div></div>'+
+    pill(st.pill,st.label)+'<button class="icon-btn" data-close="1" aria-label="Cerrar" style="margin-left:8px">✕</button></div><div class="modal-b">'+
+      '<div class="detail-grid">'+
+        '<div class="kv"><div class="k">Periodo</div><div class="v">'+fmt(a.fechaInicio)+' → '+fmt(a.fechaFin)+' · '+diasHab(a.fechaInicio,a.fechaFin)+' días háb.</div></div>'+
+        '<div class="kv"><div class="k">Inicia en</div><div class="v">'+(dias>0?dias+' días':(dias===0?'Hoy':(diasEntre(t,pd(a.fechaFin))>=0?'En curso':'Finalizada')))+'</div></div></div>'+
+      '<div class="sec-lbl">Relevo y responsables</div>'+
+      '<div class="detail-grid">'+
+        '<div class="field" style="margin:0"><label>Consultor que asume el relevo</label><select id="d-relevo"><option value="">— Sin relevo —</option>'+
+          DB.consultores.filter(function(x){return x.rol==="Consultor"&&x.id!==a.consultorId;}).map(function(x){return '<option value="'+x.id+'"'+(a.relevoId===x.id?' selected':'')+'>'+esc(x.nombre)+'</option>';}).join("")+'</select></div>'+
+        '<div class="field" style="margin:0"><label>Responsable de gestión (PMO)</label><select id="d-resp"><option value="">— Sin asignar —</option>'+optionsConsultores(a.responsablePmo,true)+'</select></div></div>'+
+      '<div class="detail-grid" style="margin-top:12px">'+
+        '<div class="field" style="margin:0"><label>Fecha límite de accesos listos</label><input type="date" id="d-lim" value="'+(a.fechaLimiteAccesos||'')+'"></div>'+
+        '<div style="display:flex;align-items:flex-end"><button class="btn primary" data-saverel="'+a.id+'" style="width:100%;justify-content:center">Guardar relevo</button></div></div>'+
+      '<div class="sec-lbl">Accesos requeridos</div>'+accBlock+chkBlock+
+    '</div><div class="modal-f"><button class="btn danger left" data-del="'+a.id+'">Eliminar ausencia</button>'+
+      '<button class="btn" data-edit="'+a.id+'">Editar datos</button>'+
+      '<button class="btn primary" data-close="1">Cerrar</button></div></div></div>';
+}
+function iaMinuta(){
+  if(!LLM.on){toast("Requiere el servidor con IA (ejecuta servidor.py)");return;}
+  var notas=(document.getElementById("m-not")||{}).value||"";
+  var tit=(document.getElementById("m-tit")||{}).value||"";
+  if(!notas.trim()){toast("Escribe las notas de la reunion en el campo Notas");return;}
+  var btn=document.querySelector("[data-mai]");if(btn){btn.textContent="Redactando...";btn.disabled=true;}
+  var sys="Eres asistente de actas de una PMO. A partir de las NOTAS crudas de una reunion, redacta el acta. "+
+    "Responde EXACTAMENTE con estas tres secciones y nada mas, en espanol:\nAGENDA:\n- ...\nACUERDOS:\n- ...\nCOMPROMISOS:\n- Descripcion | Responsable | AAAA-MM-DD\n"+
+    "Cada compromiso en una linea con esos 3 campos separados por ' | '. Si no hay fecha o responsable, deja el campo vacio pero conserva las barras. No inventes datos que no esten en las notas.";
+  fetchChat([{role:"system",content:sys},{role:"user",content:"Reunion: "+tit+"\n\nNOTAS:\n"+notas}],1400).then(function(r){
+    aplicarIaMinuta(r.content||"");toast("Acta autocompletada - revisala antes de guardar");
+  }).catch(function(){toast("No se pudo autocompletar con IA");}).then(function(){
+    var b=document.querySelector("[data-mai]");if(b){b.textContent="✨ Autocompletar acuerdos y compromisos con IA";b.disabled=false;}
+  });
+}
+function seccionIA(txt,name){
+  // Extrae los items de una seccion del acta que devuelve la IA (AGENDA / ACUERDOS /
+  // COMPROMISOS). Se analiza linea por linea para tolerar negritas, numeracion y viñetas.
+  var NL=String.fromCharCode(10), VINETA=String.fromCharCode(8226);
+  var VINETAS=["-","*",VINETA,String.fromCharCode(8211),String.fromCharCode(8212)];
+  var CABECERAS=["AGENDA","ACUERDOS","COMPROMISOS","NOTAS","ASISTENTES","PARTICIPANTES","RESUMEN","OBJETIVO"];
+  var lineas=String(txt||"").split(NL), objetivo=String(name||"").toUpperCase();
+  var out=[], dentro=false;
+  function quitarFormato(x){
+    while(x.length&&"*#> ".indexOf(x.charAt(0))>=0)x=x.slice(1);
+    return x;
+  }
+  for(var i=0;i<lineas.length;i++){
+    var L=lineas[i].trim();
+    if(!L)continue;
+    var cab=null, plana=quitarFormato(norm(L).toUpperCase());
+    for(var j=0;j<CABECERAS.length;j++){
+      if(plana.indexOf(CABECERAS[j])===0){cab=CABECERAS[j];break;}
+    }
+    if(cab){dentro=(cab===objetivo);continue;}
+    if(!dentro)continue;
+    L=quitarFormato(L);
+    if(L.length&&VINETAS.indexOf(L.charAt(0))>=0)L=L.slice(1).trim();
+    else{
+      var k=0;while(k<L.length&&L.charAt(k)>="0"&&L.charAt(k)<="9")k++;
+      if(k>0&&k<L.length&&(L.charAt(k)==="."||L.charAt(k)===")"))L=L.slice(k+1).trim();
+    }
+    L=L.split("**").join("").trim();
+    if(L)out.push(L);
+  }
+  return out;
+}
+function aplicarIaMinuta(txt){
+  var ag=seccionIA(txt,"AGENDA"),ac=seccionIA(txt,"ACUERDOS"),cp=seccionIA(txt,"COMPROMISOS");
+  function setV(id,v){var el=document.getElementById(id);if(el&&v)el.value=v;}
+  setV("m-age",ag.join("\n"));setV("m-acu",ac.join("\n"));setV("m-cmp",cp.join("\n"));
+}
+function renderModal(){
+  var root=document.getElementById("modalRoot");
+  if(!state.modal){root.innerHTML="";return;}
+  var m=state.modal;
+  if(m.type==="form")root.innerHTML=modalForm(m.id);
+  else if(m.type==="detail")root.innerHTML=modalDetail(m.id);
+  else if(m.type==="mview")root.innerHTML=modalMinutaView(m.id);
+  else if(m.type==="mform")root.innerHTML=modalMinutaForm(m.id);
+  else if(m.type==="tview")root.innerHTML=modalTransView(m.id);
+  else if(m.type==="tform")root.innerHTML=modalTransForm();
+}
+
+/* ============ render ============ */
+function render(){
+  renderTools();
+  if(state.tool==="hub")document.getElementById("view").innerHTML=hubHTML();
+  else if(state.tool==="vacaciones")renderVacaciones();
+  else if(state.tool==="minutas")renderMinutas();
+  else if(state.tool==="transcripciones")renderTranscripciones();
+  else if(state.tool==="asistente")renderAsistente();
+  renderModal();
+}
+
+/* ============ toast ============ */
+var toastT;
+function toast(m){var el=document.getElementById("toast");el.textContent=m;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("show");},1900);}
+
+/* ============ events ============ */
+document.getElementById("btnTheme").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  if(!cur)cur=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  document.documentElement.setAttribute("data-theme",cur==="dark"?"light":"dark");
+});
+document.getElementById("btnReset").addEventListener("click",function(){
+  var go=true;try{go=confirm("¿Restaurar los datos de ejemplo? Se perderán los cambios que hayas hecho.");}catch(e){}
+  if(go){reset();state.tool="hub";state.vtab="panel";state.modal=null;render();toast("Datos de ejemplo restaurados");}
+});
+
+document.addEventListener("click",function(e){
+  var sel="[data-tool],[data-vtab],[data-open],[data-close],[data-save],[data-del],[data-edit],[data-cyc],[data-chk],"+
+          "[data-genacc],[data-genchk],[data-saverel],[data-year],[data-anew],[data-mnew],[data-mopen],[data-medit],"+
+          "[data-mdel],[data-msave],[data-mcopy],[data-mdown],[data-ccyc],[data-ask],[data-send],[data-mai],"+
+          "[data-tnew],[data-topen],[data-tsave],[data-tdel],[data-tmin],[data-mtab],[data-buscar],[data-hit]";
+  var el=e.target.closest(sel);
+  if(!el)return;
+  var d=el.dataset;
+
+  if(d.tool){state.tool=d.tool;state.modal=null;render();window.scrollTo(0,0);return;}
+  if(d.vtab){state.vtab=d.vtab;render();return;}
+  if(d.anew!=null){state.modal={type:"form",id:null};renderModal();return;}
+  if(d.year){state.year+=parseInt(d.year,10);render();return;}
+  if(d.open){state.modal={type:"detail",id:d.open};renderModal();return;}
+  if(d.close!=null){
+    if(el.classList.contains("overlay")&&e.target!==el)return;
+    state.modal=null;render();return;
+  }
+  if(el.hasAttribute("data-save")){saveForm(el.getAttribute("data-save")||null);return;}
+  if(d.edit){state.modal={type:"form",id:d.edit};renderModal();return;}
+  if(d.del){DB.ausencias=DB.ausencias.filter(function(a){return a.id!==d.del;});save();state.modal=null;toast("Ausencia eliminada");render();return;}
+  if(d.cyc){var p=d.cyc.split("|"),a1=ausencia(p[0]);
+    var ax=a1.accesos.filter(function(x){return x.id===p[1];})[0];
+    ax.estado=({pendiente:"tramite",tramite:"otorgado",otorgado:"pendiente"})[ax.estado];save();renderModal();return;}
+  if(d.chk){var q=d.chk.split("|"),a2=ausencia(q[0]);
+    a2.checklist.forEach(function(cat){cat.items.forEach(function(i){if(i.id===q[1])i.done=!i.done;});});save();renderModal();return;}
+  if(d.genacc){var a3=ausencia(d.genacc);a3.accesos=accesosTpl(byId(a3.consultorId).portafolio);save();toast("Accesos generados");renderModal();return;}
+  if(d.genchk){var a4=ausencia(d.genchk);a4.checklist=chkTpl();save();toast("Checklist generado");renderModal();return;}
+  if(d.saverel){
+    var ar=ausencia(d.saverel),relv=document.getElementById("d-relevo").value||null;
+    var respv=document.getElementById("d-resp").value||null,limv=document.getElementById("d-lim").value||null;
+    var had=ar.relevoId;ar.relevoId=relv;ar.responsablePmo=respv;ar.fechaLimiteAccesos=limv;
+    if(relv&&!had&&!ar.accesos.length)ar.accesos=accesosTpl(byId(ar.consultorId).portafolio);
+    if(relv&&!had&&!ar.checklist.length)ar.checklist=chkTpl();
+    save();toast(relv?"Relevo guardado":"Relevo removido");renderModal();return;
+  }
+  /* minutas */
+  if(d.mnew!=null){state.modal={type:"mform",id:null};renderModal();return;}
+  if(d.mopen){state.modal={type:"mview",id:d.mopen};renderModal();return;}
+  if(d.medit){state.modal={type:"mform",id:d.medit};renderModal();return;}
+  if(d.mdel){DB.minutas=DB.minutas.filter(function(m){return m.id!==d.mdel;});save();
+    if(API.on)apiPost("/api/minutas/eliminar",{id:d.mdel}).then(refrescarStats).catch(function(){});
+    state.modal=null;toast("Minuta eliminada");render();return;}
+  if(el.hasAttribute("data-msave")){saveMinuta(el.getAttribute("data-msave")||null);return;}
+  if(d.tnew!=null){state.modal={type:"tform"};renderModal();return;}
+  if(d.topen){abrirTranscripcion(d.topen);return;}
+  if(d.tsave!=null){guardarTranscripcion();return;}
+  if(d.tdel){borrarTranscripcion(d.tdel);return;}
+  if(d.tmin){minutaDesdeTranscripcion(d.tmin);return;}
+  if(d.mtab){state.mtab=d.mtab;render();return;}
+  if(d.buscar!=null){ejecutarBusqueda();return;}
+  if(d.hit){abrirResultado(d.hit);return;}
+  if(d.mai!=null){iaMinuta();return;}
+  if(d.mcopy){copiarActa(d.mcopy);return;}
+  if(d.mdown){descargarActa(d.mdown);return;}
+  if(d.ccyc){
+    var r=d.ccyc.split("|"),mm=minuta(r[0]);
+    var cc=(mm.compromisos||[]).filter(function(x){return x.id===r[1];})[0];
+    if(cc){cc.estado=({pendiente:"curso",curso:"hecho",hecho:"pendiente"})[cc.estado];save();
+      if(API.on)apiPost("/api/compromiso",{minutaId:mm.id,id:cc.id,estado:cc.estado}).catch(function(){});
+      if(state.modal)renderModal();else render();}
+    return;
+  }
+  /* asistente */
+  if(d.ask){preguntar(d.ask);return;}
+  if(d.send!=null){var inp=document.getElementById("ai-input");if(inp){preguntar(inp.value);}return;}
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"&&state.modal){state.modal=null;render();return;}
+  if(e.key==="Enter"&&e.target&&e.target.id==="ai-input"){preguntar(e.target.value);}
+  if(e.key==="Enter"&&e.target&&e.target.id==="q-hist"){ejecutarBusqueda();}
+});
+
+/* ============ boot ============ */
+load();
+render();
+checkBackend();
+if(typeof global!=="undefined"){global.__T={seed:seed,responder:responder,chkPct:chkPct,estadoRelevo:estadoRelevo,posPct:posPct,
+  accesosTpl:accesosTpl,chkTpl:chkTpl,actaTexto:actaTexto,compromisosAbiertos:compromisosAbiertos,matchProyectos:matchProyectos,
+  matchPortafolio:matchPortafolio,matchConsultor:matchConsultor,hubHTML:hubHTML,minuta:minuta,ausencia:ausencia,
+  getDB:function(){return DB;},state:state,setTool:function(t){state.tool=t;render();},
+  mdToHtml:mdToHtml,contextoPMO:contextoPMO,buildMessages:buildMessages,
+  buscarLocal:buscarLocal,textoDeMinuta:textoDeMinuta,seedTranscripciones:seedTranscripciones,
+  seccionIA:seccionIA,aplicarIaMinuta:aplicarIaMinuta,
+  fuentesHTML:fuentesHTML,extractoHtml:extractoHtml,fragsDe:fragsDe,
+  setAPI:function(v){API.on=v;},setLLM:function(v){LLM.on=v;}};}
+})();
+</script>

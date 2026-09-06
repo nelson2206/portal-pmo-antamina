@@ -318,6 +318,23 @@
   .hitrow .ht{font-weight:650;font-size:13.5px}
   .hitrow .hx{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
   .hitrow .hm{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:4px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:1000px){.pgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.pgrid{grid-template-columns:1fr}}
+  .pcard{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:16px;
+    box-shadow:var(--shadow);cursor:pointer;transition:border-color .12s,transform .12s}
+  .pcard:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .ptop{display:flex;align-items:flex-start;gap:9px}
+  .ptop .sem{margin-top:5px}
+  .pcard .pn{font-weight:700;font-size:14.5px;line-height:1.25}
+  .pcard .ppf{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .prow2{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .prow2 b{color:var(--ink)}
+  .phito{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+  .phito .venc{color:var(--crit);font-weight:650}
+  .prie{font-size:12px;color:var(--warn);margin-top:7px;background:var(--warn-soft);
+    padding:6px 9px;border-radius:8px}
+  .pfoot{display:flex;align-items:center;gap:7px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
 </style>
 
 <div class="wrap">
@@ -409,6 +426,7 @@ function chkTpl(){
 }
 
 /* ============ seed ============ */
+function dRel(n){var d=today();d.setDate(d.getDate()+n);return iso(d);}
 function seed(){
   var C=[
     {id:"c1",nombre:"Ana Quispe",ini:"AQ",portafolio:"Operaciones Mina",rol:"Consultor",color:"#2F8B34",vacTotal:30,vacUsados:6},
@@ -420,20 +438,20 @@ function seed(){
     {id:"lider",nombre:"Elena Palomino",ini:"EP",portafolio:"Coordinación PMO",rol:"Líder",color:"#3F514A",vacTotal:30,vacUsados:8}
   ];
   var Y=today().getFullYear();
-  function mk(id,cid,tipo,mi,di,mf,df,rel){
-    var a={id:id,consultorId:cid,tipo:tipo,fechaInicio:iso(new Date(Y,mi,di)),fechaFin:iso(new Date(Y,mf,df)),
+  function mk(id,cid,tipo,offIni,offFin,rel){
+    var a={id:id,consultorId:cid,tipo:tipo,fechaInicio:dRel(offIni),fechaFin:dRel(offFin),
       estado:"Aprobada",relevoId:rel||null,responsablePmo:rel?"lider":null,
-      fechaLimiteAccesos:rel?iso(new Date(Y,mi,Math.max(1,di-3))):null,accesos:[],checklist:[]};
+      fechaLimiteAccesos:rel?dRel(offIni-3):null,accesos:[],checklist:[]};
     if(rel){var pf=C.filter(function(c){return c.id===cid;})[0].portafolio;a.accesos=accesosTpl(pf);a.checklist=chkTpl();}
     return a;
   }
   var A=[
-    mk("A-2026-041","c3","vacaciones",6,21,7,8,"c6"),
-    mk("A-2026-039","c1","vacaciones",7,4,7,24,"c2"),
-    mk("A-2026-045","c4","licencia",7,10,7,14,null),
-    mk("A-2026-052","c2","capacitacion",8,15,8,19,null),
-    mk("A-2026-058","c6","descanso",9,27,10,7,"c3"),
-    mk("A-2026-060","c5","vacaciones",11,1,11,15,"c4")
+    mk("A-"+Y+"-041","c3","vacaciones",6,24,"c6"),
+    mk("A-"+Y+"-039","c1","vacaciones",20,40,"c2"),
+    mk("A-"+Y+"-045","c4","licencia",27,31,null),
+    mk("A-"+Y+"-052","c2","capacitacion",62,66,null),
+    mk("A-"+Y+"-058","c6","descanso",96,108,"c3"),
+    mk("A-"+Y+"-060","c5","vacaciones",140,154,"c4")
   ];
   var a41=A[0];
   a41.accesos[0].estado="otorgado";a41.accesos[1].estado="otorgado";a41.accesos[4].estado="tramite";
@@ -444,36 +462,36 @@ function seed(){
   a39.checklist[0].items[0].done=true;a39.checklist[1].items[0].done=true;a39.checklist[1].items[1].done=true;
 
   var P=[
-    {id:"P-01",nombre:"Optimización de flota de acarreo",portafolio:"Operaciones Mina",respId:"c1",semaforo:"verde",avance:72,hito:"Cierre de fase 2",fechaHito:Y+"-08-20",riesgos:["Disponibilidad de repuestos críticos"],presupuesto:"US$ 4.2 M",capex:68,act:Y+"-07-10"},
-    {id:"P-02",nombre:"Plan de minado 2027",portafolio:"Operaciones Mina",respId:"c1",semaforo:"ambar",avance:40,hito:"Entrega de borrador",fechaHito:Y+"-09-15",riesgos:["Datos geológicos incompletos","Dependencia de consultora externa"],presupuesto:"US$ 0.9 M",capex:35,act:Y+"-07-08"},
-    {id:"P-03",nombre:"Recuperación de molienda SAG",portafolio:"Planta Concentradora",respId:"c2",semaforo:"rojo",avance:28,hito:"Arranque de pruebas",fechaHito:Y+"-07-30",riesgos:["Retraso de repuesto crítico (12 semanas)","Ventana de parada limitada"],presupuesto:"US$ 6.8 M",capex:41,act:Y+"-07-12"},
-    {id:"P-04",nombre:"Balance metalúrgico Q3",portafolio:"Planta Concentradora",respId:"c2",semaforo:"verde",avance:88,hito:"Cierre Q3",fechaHito:Y+"-09-30",riesgos:[],presupuesto:"US$ 0.3 M",capex:80,act:Y+"-07-11"},
-    {id:"P-05",nombre:"Monitoreo ambiental participativo",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"verde",avance:65,hito:"Campaña de monitoreo",fechaHito:Y+"-08-05",riesgos:[],presupuesto:"US$ 1.1 M",capex:60,act:Y+"-07-14"},
-    {id:"P-06",nombre:"Cierre progresivo de componentes",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"ambar",avance:45,hito:"Aprobación de plan",fechaHito:Y+"-10-01",riesgos:["Permiso sectorial pendiente"],presupuesto:"US$ 2.6 M",capex:38,act:Y+"-07-09"},
-    {id:"P-07",nombre:"Mantenimiento predictivo (RCM)",portafolio:"Mant. & Confiabilidad",respId:"c4",semaforo:"ambar",avance:55,hito:"Piloto en chancado",fechaHito:Y+"-09-10",riesgos:["Sensores pendientes de instalación"],presupuesto:"US$ 1.8 M",capex:52,act:Y+"-07-07"},
-    {id:"P-08",nombre:"Reposición Antamina — Ingeniería",portafolio:"Proy. Reposición Antamina",respId:"c5",semaforo:"verde",avance:33,hito:"Hito de ingeniería básica",fechaHito:Y+"-12-01",riesgos:["Aprobación de estudio de factibilidad"],presupuesto:"US$ 24.0 M",capex:22,act:Y+"-07-13"},
-    {id:"P-09",nombre:"Torre de control PMO",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"verde",avance:70,hito:"Salida a producción",fechaHito:Y+"-10-15",riesgos:[],presupuesto:"US$ 0.7 M",capex:64,act:Y+"-07-15"},
-    {id:"P-10",nombre:"Integración SAP – Power BI",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"ambar",avance:50,hito:"Certificación de datos",fechaHito:Y+"-08-28",riesgos:["Calidad de datos maestros"],presupuesto:"US$ 1.4 M",capex:47,act:Y+"-07-06"}
+    {id:"P-01",nombre:"Optimización de flota de acarreo",portafolio:"Operaciones Mina",respId:"c1",semaforo:"verde",avance:72,hito:"Cierre de fase 2",fechaHito:dRel(45),riesgos:["Disponibilidad de repuestos críticos"],presupuesto:"US$ 4.2 M",capex:68,act:dRel(-4)},
+    {id:"P-02",nombre:"Plan de minado 2027",portafolio:"Operaciones Mina",respId:"c1",semaforo:"ambar",avance:40,hito:"Entrega de borrador",fechaHito:dRel(9),riesgos:["Datos geológicos incompletos","Dependencia de consultora externa"],presupuesto:"US$ 0.9 M",capex:35,act:dRel(-6)},
+    {id:"P-03",nombre:"Recuperación de molienda SAG",portafolio:"Planta Concentradora",respId:"c2",semaforo:"rojo",avance:28,hito:"Arranque de pruebas",fechaHito:dRel(24),riesgos:["Retraso de repuesto crítico (12 semanas)","Ventana de parada limitada"],presupuesto:"US$ 6.8 M",capex:41,act:dRel(-2)},
+    {id:"P-04",nombre:"Balance metalúrgico Q3",portafolio:"Planta Concentradora",respId:"c2",semaforo:"verde",avance:88,hito:"Cierre Q3",fechaHito:dRel(24),riesgos:[],presupuesto:"US$ 0.3 M",capex:80,act:dRel(-3)},
+    {id:"P-05",nombre:"Monitoreo ambiental participativo",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"verde",avance:65,hito:"Campaña de monitoreo",fechaHito:dRel(30),riesgos:[],presupuesto:"US$ 1.1 M",capex:60,act:dRel(-1)},
+    {id:"P-06",nombre:"Cierre progresivo de componentes",portafolio:"Sostenibilidad & MA",respId:"c3",semaforo:"ambar",avance:45,hito:"Aprobación de plan",fechaHito:dRel(25),riesgos:["Permiso sectorial pendiente"],presupuesto:"US$ 2.6 M",capex:38,act:dRel(-5)},
+    {id:"P-07",nombre:"Mantenimiento predictivo (RCM)",portafolio:"Mant. & Confiabilidad",respId:"c4",semaforo:"ambar",avance:55,hito:"Piloto en chancado",fechaHito:dRel(35),riesgos:["Sensores pendientes de instalación"],presupuesto:"US$ 1.8 M",capex:52,act:dRel(-8)},
+    {id:"P-08",nombre:"Reposición Antamina — Ingeniería",portafolio:"Proy. Reposición Antamina",respId:"c5",semaforo:"verde",avance:33,hito:"Hito de ingeniería básica",fechaHito:dRel(86),riesgos:["Aprobación de estudio de factibilidad"],presupuesto:"US$ 24.0 M",capex:22,act:dRel(-2)},
+    {id:"P-09",nombre:"Torre de control PMO",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"verde",avance:70,hito:"Salida a producción",fechaHito:dRel(39),riesgos:[],presupuesto:"US$ 0.7 M",capex:64,act:dRel(-1)},
+    {id:"P-10",nombre:"Integración SAP – Power BI",portafolio:"Transformación Digital / TI",respId:"c6",semaforo:"ambar",avance:50,hito:"Certificación de datos",fechaHito:dRel(53),riesgos:["Calidad de datos maestros"],presupuesto:"US$ 1.4 M",capex:47,act:dRel(-9)}
   ];
 
   var M=[
     {id:"M-2026-014",titulo:"Comité semanal — Planta Concentradora",portafolio:"Planta Concentradora",
-     fecha:Y+"-07-10",hora:"09:00",modalidad:"Virtual (Teams)",lugar:"Microsoft Teams",
+     fecha:dRel(-4),hora:"09:00",modalidad:"Virtual (Teams)",lugar:"Microsoft Teams",
      asistentes:[{nombre:"Diego Salazar",rol:"Consultor PMO"},{nombre:"Elena Palomino",rol:"Líder PMO"},{nombre:"J. Ramos",rol:"Superintendente de Planta"}],
      agenda:["Avance de recuperación de molienda SAG","Ventana de parada programada","Ejecución presupuestal Q3"],
      acuerdos:["Se prioriza la compra del repuesto crítico con el proveedor alterno.","Se reprograma la parada de planta a la semana 34.","El proyecto se mantiene en rojo hasta confirmar la fecha del repuesto."],
      compromisos:[
-       {id:uid("cp"),desc:"Confirmar fecha de llegada del repuesto crítico",responsable:"Diego Salazar",fecha:Y+"-07-24",estado:"curso"},
-       {id:uid("cp"),desc:"Actualizar cronograma de parada de planta",responsable:"J. Ramos",fecha:Y+"-07-31",estado:"pendiente"}],
+       {id:uid("cp"),desc:"Confirmar fecha de llegada del repuesto crítico",responsable:"Diego Salazar",fecha:dRel(3),estado:"curso"},
+       {id:uid("cp"),desc:"Actualizar cronograma de parada de planta",responsable:"J. Ramos",fecha:dRel(10),estado:"pendiente"}],
      notas:"Se solicita escalar el riesgo del repuesto al comité de operaciones."},
     {id:"M-2026-015",titulo:"Kick-off — Torre de control PMO",portafolio:"Transformación Digital / TI",
-     fecha:Y+"-07-14",hora:"15:00",modalidad:"Presencial",lugar:"Sala Yanacancha",
+     fecha:dRel(-1),hora:"15:00",modalidad:"Presencial",lugar:"Sala Yanacancha",
      asistentes:[{nombre:"Marco Antón",rol:"Consultor PMO"},{nombre:"Elena Palomino",rol:"Líder PMO"},{nombre:"P. Cruz",rol:"TI Antamina"}],
      agenda:["Alcance y objetivos","Arquitectura y accesos","Plan de despliegue"],
      acuerdos:["Se aprueba el alcance de la fase 1.","TI habilitará los accesos a Dataverse antes del 25 de julio."],
      compromisos:[
-       {id:uid("cp"),desc:"Habilitar accesos a Dataverse para el equipo PMO",responsable:"P. Cruz",fecha:Y+"-07-25",estado:"pendiente"},
-       {id:uid("cp"),desc:"Enviar plan de despliegue fase 1",responsable:"Marco Antón",fecha:Y+"-07-22",estado:"hecho"}],
+       {id:uid("cp"),desc:"Habilitar accesos a Dataverse para el equipo PMO",responsable:"P. Cruz",fecha:dRel(-2),estado:"pendiente"},
+       {id:uid("cp"),desc:"Enviar plan de despliegue fase 1",responsable:"Marco Antón",fecha:dRel(-5),estado:"hecho"}],
      notas:""}
   ];
   return {consultores:C,ausencias:A,proyectos:P,minutas:M,transcripciones:seedTranscripciones(),cfg:{ventana:30,umbral:90},v:2};
@@ -482,12 +500,12 @@ function seed(){
 function seedTranscripciones(){
   var Y=today().getFullYear(), NL=String.fromCharCode(10);
   function t(id,titulo,fecha,pf,part,origen,texto){
-    return {id:"T-"+Y+"-"+id,titulo:titulo,fecha:Y+"-"+fecha,portafolio:pf,participantes:part,
+    return {id:"T-"+Y+"-"+id,titulo:titulo,fecha:dRel(fecha),portafolio:pf,participantes:part,
       origen:origen,texto:texto,caracteres:texto.length,
       fragmentos:Math.max(1,Math.ceil(texto.length/900))};
   }
   return [
-    t("001","Comité semanal — Planta Concentradora (transcripción)","07-10","Planta Concentradora",
+    t("001","Comité semanal — Planta Concentradora (transcripción)",-4,"Planta Concentradora",
       "Diego Salazar, Elena Palomino, J. Ramos","Teams",
       ["Elena Palomino: Buenos días. Empecemos por el estado de la recuperación de molienda SAG.",
       "Diego Salazar: El proyecto sigue en rojo. El avance es 28% contra un 45% planificado. La causa raíz es el retraso del repuesto crítico del molino: el proveedor original nos dio una ventana de doce semanas, lo que nos deja fuera de la parada programada.",
@@ -499,7 +517,7 @@ function seedTranscripciones(){
       "Elena Palomino: De acuerdo. Sobre el balance metalúrgico Q3, ¿cómo vamos?",
       "Diego Salazar: En verde, 88% de avance, cierre previsto el 30 de septiembre sin observaciones.",
       "Elena Palomino: Perfecto. La ejecución presupuestal del portafolio está en 41% de CAPEX, dentro de lo esperado."].join(NL)),
-    t("002","Kick-off — Torre de control PMO (transcripción)","07-14","Transformación Digital / TI",
+    t("002","Kick-off — Torre de control PMO (transcripción)",-1,"Transformación Digital / TI",
       "Marco Antón, Elena Palomino, P. Cruz","Teams",
       ["Marco Antón: El objetivo de la Torre de control PMO es consolidar el estado de los seis portafolios en un solo tablero, con salida a producción el 15 de octubre.",
       "P. Cruz: Desde TI necesitamos definir los accesos. Proponemos Dataverse con Entra ID, aprovechando el licenciamiento M365 que ya tiene Antamina.",
@@ -508,7 +526,7 @@ function seedTranscripciones(){
       "Marco Antón: Coincido. La integración está en 50% y la certificación de datos es el hito del 28 de agosto. Si los maestros no se limpian, arrastramos el problema a la Torre de control.",
       "Elena Palomino: Acordamos entonces: TI habilita accesos a Dataverse antes del 25 de julio, y Marco envía el plan de despliegue de la fase 1 el 22 de julio.",
       "Marco Antón: Confirmado. El alcance de la fase 1 queda aprobado."].join(NL)),
-    t("003","Revisión mensual — Sostenibilidad y Medio Ambiente","07-08","Sostenibilidad & MA",
+    t("003","Revisión mensual — Sostenibilidad y Medio Ambiente",-6,"Sostenibilidad & MA",
       "Carla Ninanya, Elena Palomino, R. Vega (Comunidades)","Presencial",
       ["Carla Ninanya: El monitoreo ambiental participativo va en verde, 65% de avance. La campaña de monitoreo con las comunidades está programada para el 5 de agosto.",
       "R. Vega: Las comunidades de Huaripampa y San Marcos ya confirmaron participación. Es clave que el relevo conozca a los dirigentes antes de la campaña.",
@@ -551,7 +569,7 @@ function compromisosAbiertos(){
 function portafolios(){var s=[];consultores().forEach(function(c){if(s.indexOf(c.portafolio)<0)s.push(c.portafolio);});return s;}
 
 /* ============ state ============ */
-var state={tool:"hub",vtab:"panel",mtab:"lista",busq:{q:"",res:null,cargando:false},year:today().getFullYear(),modal:null,chat:[
+var state={tool:"hub",vtab:"panel",mtab:"lista",pfiltro:"",cfiltro:"abiertos",cresp:"",busq:{q:"",res:null,cargando:false},year:today().getFullYear(),modal:null,chat:[
   {who:"bot",html:"<p>Hola 👋 Soy el <b>Asistente PMO</b>. Consulto los <b>10 proyectos</b> de los 6 portafolios, las ausencias del equipo, los compromisos de las actas y el <b>texto completo de las transcripciones</b> de reuniones.</p><p>Pregúntame qué se acordó en una reunión, por qué se atrasó un proyecto, quién asumió un compromiso o el estado de un portafolio. Cuando responda usando el histórico, te muestro <b>las fuentes</b>.</p>"}
 ]};
 
@@ -563,6 +581,7 @@ function pill(cls,label){return '<span class="pill '+cls+'"><span class="d"></sp
 var TOOLS=[
   {k:"hub",ic:"⌂",label:"Inicio"},
   {k:"vacaciones",ic:"🗓",label:"Relevo·PMO"},
+  {k:"proyectos",ic:"◈",label:"Proyectos"},
   {k:"minutas",ic:"📝",label:"Minutas"},
   {k:"transcripciones",ic:"🎙",label:"Transcripciones"},
   {k:"asistente",ic:"💬",label:"Asistente"}
@@ -588,6 +607,11 @@ function hubHTML(){
      d:"Actas con agenda, acuerdos y compromisos. Guardadas en base de datos y consultables como fuente histórica.",
      stats:[pill("copper",DB.minutas.length+" actas"),pill(abiertos?"warn":"ok",abiertos+" compromisos abiertos"),
             pill(API.on?"info":"muted",API.on?"Base de datos":"Local")]},
+    {tool:"proyectos",color:"#9B7B1E",ic:"◈",t:"Proyectos y portafolios",
+     d:"Estado consolidado de los proyectos: semáforo, avance, hitos, riesgos y CAPEX, con aviso de cobertura por ausencias.",
+     stats:[pill("info",DB.proyectos.length+" proyectos"),
+            pill(rojos?"crit":"ok",rojos+" en rojo"),
+            pill("muted",Math.round(DB.proyectos.reduce(function(a,p){return a+p.avance;},0)/Math.max(1,DB.proyectos.length))+"% avance")]},
     {tool:"transcripciones",color:"#6a5aa8",ic:"🎙️",t:"Transcripciones",
      d:"Repositorio de transcripciones de reuniones, indexadas y buscables. Alimentan al Asistente y generan actas con IA.",
      stats:[pill("info",(DB.transcripciones||[]).length+" transcripciones"),
@@ -758,10 +782,12 @@ function renderMinutas(){
            :'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
     '<button class="btn primary sm" data-mnew="1" style="margin-left:10px">＋ Nueva minuta</button></div>'+
     '<div class="subtabs">'+
-      '<button data-mtab="lista" class="'+(state.mtab==="buscar"?"":"active")+'">Minutas y compromisos</button>'+
+      '<button data-mtab="lista" class="'+(state.mtab==="lista"||!state.mtab?"active":"")+'">Minutas</button>'+
+      '<button data-mtab="compromisos" class="'+(state.mtab==="compromisos"?"active":"")+'">✓ Compromisos</button>'+
       '<button data-mtab="buscar" class="'+(state.mtab==="buscar"?"active":"")+'">🔎 Buscar en el histórico</button>'+
     '</div>'+
-    (state.mtab==="buscar"?
+    (state.mtab==="compromisos"? compromisosHTML() :
+     state.mtab==="buscar"?
       '<div class="card"><div class="card-b">'+
         '<div style="display:flex;gap:9px;margin-bottom:14px">'+
         '<input id="q-hist" value="'+esc(state.busq.q||"")+'" placeholder="Ej. repuesto crítico, permiso sectorial, accesos Dataverse…" '+
@@ -833,6 +859,7 @@ function modalMinutaView(id){
     '<div class="modal-f"><button class="btn danger left" data-mdel="'+m.id+'">Eliminar</button>'+
       '<button class="btn" data-mcopy="'+m.id+'">📋 Copiar acta</button>'+
       '<button class="btn" data-mdown="'+m.id+'">⬇ Descargar</button>'+
+      '<button class="btn" data-mmail="'+m.id+'">✉ Correo</button>'+
       '<button class="btn primary" data-medit="'+m.id+'">Editar</button></div></div></div>';
 }
 function modalMinutaForm(id){
@@ -861,6 +888,8 @@ function modalMinutaForm(id){
         '<div class="field"><label>Lugar / enlace</label><input id="m-lug" value="'+esc(m?m.lugar:"")+'" placeholder="Sala Yanacancha / Teams"></div>'+
         '<div class="field"><label>Portafolio</label><select id="m-pf">'+pfOpts+'</select></div>'+
       '</div>'+
+      '<div style="margin:-4px 0 14px"><button class="btn sm" data-mcarry="1" type="button">↩ Traer acuerdos abiertos de este portafolio</button>'+
+      '<div class="aihint">Arrastra los compromisos que siguen abiertos en actas anteriores para darles seguimiento en esta reunión.</div></div>'+
       '<div class="field"><label>Asistentes</label><textarea id="m-asi" placeholder="Un asistente por línea">'+esc(asisTxt)+'</textarea>'+
         '<div class="hint">Formato: Nombre — Rol (uno por línea)</div></div>'+
       '<div class="field"><label>Agenda</label><textarea id="m-age" placeholder="Un punto por línea">'+esc(m?(m.agenda||[]).join("\n"):"")+'</textarea>'+
@@ -924,6 +953,226 @@ function descargarActa(id){
   }catch(e){toast("Descarga no disponible aquí — usa Copiar");}
 }
 
+function traerAcuerdosAbiertos(){
+  var NL=String.fromCharCode(10);
+  var pf=(document.getElementById("m-pf")||{}).value||"";
+  var campo=document.getElementById("m-cmp"); if(!campo)return;
+  var actual=campo.value||"";
+  var abiertos=todosLosCompromisos().filter(function(x){
+    return x.c.estado!=="hecho" && (!pf || x.m.portafolio===pf);});
+  if(!abiertos.length){toast("No hay acuerdos abiertos en ese portafolio");return;}
+  var existentes=actual.split(NL).map(function(l){return norm(l.split("|")[0]);});
+  var nuevas=abiertos.map(function(x){
+      return [x.c.desc,x.c.responsable||"",x.c.fecha||""].join(" | ");})
+    .filter(function(l){return existentes.indexOf(norm(l.split("|")[0]))<0;});
+  if(!nuevas.length){toast("Los acuerdos abiertos ya están incluidos");return;}
+  campo.value=(actual.trim()?actual.trim()+NL:"")+nuevas.join(NL);
+  toast("Añadidos "+nuevas.length+" acuerdo(s) abiertos del portafolio");
+}
+function correoMinuta(id){
+  var m=minuta(id); if(!m)return;
+  var NL=String.fromCharCode(13)+String.fromCharCode(10);
+  var eml=["To: ","Subject: Minuta - "+m.titulo+" ("+fmtL(m.fecha)+")","X-Unsent: 1",
+    "Content-Type: text/plain; charset=utf-8","",actaTexto(m)].join(NL);
+  descargarTexto("Minuta_"+String(m.id)+".eml",eml,"message/rfc822");
+}
+
+/* ============ COMPROMISOS CONSOLIDADOS ============ */
+function todosLosCompromisos(){
+  var out=[];
+  (DB.minutas||[]).forEach(function(m){
+    (m.compromisos||[]).forEach(function(c){out.push({c:c,m:m});});
+  });
+  return out.sort(function(a,b){
+    return pd(a.c.fecha||"2999-01-01")-pd(b.c.fecha||"2999-01-01");});
+}
+function compromisosHTML(){
+  var t=today(), filtro=state.cfiltro||"abiertos", todos=todosLosCompromisos();
+  var resp=state.cresp||"";
+  var lista=todos.filter(function(x){
+    if(filtro==="abiertos"&&x.c.estado==="hecho")return false;
+    if(filtro==="vencidos"&&!(x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t))return false;
+    if(resp&&(x.c.responsable||"")!==resp)return false;
+    return true;
+  });
+  var responsables=[];
+  todos.forEach(function(x){var r=(x.c.responsable||"").trim();
+    if(r&&responsables.indexOf(r)<0)responsables.push(r);});
+  var nAb=todos.filter(function(x){return x.c.estado!=="hecho";}).length;
+  var nVen=todos.filter(function(x){return x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t;}).length;
+  var chips=[["abiertos","Abiertos ("+nAb+")"],["vencidos","Vencidos ("+nVen+")"],["todos","Todos ("+todos.length+")"]]
+    .map(function(o){return '<button class="btn sm'+(filtro===o[0]?" primary":"")+'" data-cfil="'+o[0]+'">'+o[1]+'</button>';}).join(" ");
+  var selResp='<select data-cresp="1" style="background:var(--surface-3);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13px;color:var(--ink);font-family:inherit">'+
+    '<option value="">Todos los responsables</option>'+
+    responsables.map(function(r){return '<option'+(resp===r?' selected':'')+'>'+esc(r)+'</option>';}).join("")+'</select>';
+  var filas=lista.map(function(x){
+    var e=cmpEstado(x.c.estado), venc=x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t;
+    var dias=x.c.fecha?diasEntre(t,pd(x.c.fecha)):null;
+    return '<tr><td><div style="font-weight:600">'+esc(x.c.desc)+'</div>'+
+      '<div class="mini" style="color:var(--muted)">'+esc(x.m.titulo)+'</div></td>'+
+      '<td>'+esc(x.c.responsable||"—")+'</td>'+
+      '<td class="cell-mono">'+(x.c.fecha?fmt(x.c.fecha):"—")+
+        (dias!==null?'<div style="color:'+(venc?"var(--crit)":"var(--muted)")+'">'+
+          (venc?Math.abs(dias)+" días tarde":(dias===0?"hoy":"en "+dias+" días"))+'</div>':'')+'</td>'+
+      '<td>'+esc(x.m.portafolio||"General")+'</td>'+
+      '<td><button class="cyc" data-ccyc="'+esc(x.m.id)+'|'+esc(x.c.id)+'">'+
+        (venc?pill("crit","Vencido"):pill(e[0],e[1]))+'</button></td>'+
+      '<td><button class="btn sm" data-hit="'+esc(x.m.id)+'">Ver acta</button></td></tr>';
+  }).join("");
+  return '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+      chips+'<span class="spacer" style="flex:1"></span>'+selResp+
+      '<button class="btn sm" data-cexp="1">⬇ Exportar CSV</button></div>'+
+    '<div class="card"><div class="scrollx"><table class="tbl">'+
+    '<thead><tr><th>Compromiso</th><th>Responsable</th><th>Vence</th><th>Portafolio</th><th>Estado</th><th></th></tr></thead>'+
+    '<tbody>'+filas+'</tbody></table></div>'+
+    (filas?'':'<div class="empty"><div class="e-ic">✅</div>No hay compromisos con ese filtro.</div>')+'</div>'+
+    '<p class="note">Clic en el estado para avanzarlo: pendiente → en curso → hecho.</p>';
+}
+function exportarCompromisosCSV(){
+  var NL=String.fromCharCode(10), t=today();
+  var q=function(v){return '"'+String(v==null?"":v).split('"').join('""')+'"';};
+  var filas=[["Compromiso","Responsable","Fecha","Estado","Acta","Portafolio","Vencido"].map(q).join(";")];
+  todosLosCompromisos().forEach(function(x){
+    var venc=x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t;
+    filas.push([x.c.desc,x.c.responsable,x.c.fecha,cmpEstado(x.c.estado)[1],x.m.titulo,
+                x.m.portafolio,venc?"SI":"NO"].map(q).join(";"));
+  });
+  descargarTexto("compromisos-pmo.csv",filas.join(NL),"text/csv;charset=utf-8");
+}
+function descargarTexto(nombre,contenido,tipo){
+  try{
+    var blob=new Blob([contenido],{type:tipo||"text/plain;charset=utf-8"});
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url;a.download=nombre;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    toast("Descargado: "+nombre);
+  }catch(e){toast("La descarga no está disponible aquí");}
+}
+/* ============ PROYECTOS / PORTAFOLIOS ============ */
+function proyecto(id){for(var i=0;i<DB.proyectos.length;i++)if(DB.proyectos[i].id===id)return DB.proyectos[i];return null;}
+function ordenSemaforo(p){var o={rojo:0,ambar:1,verde:2}[p.semaforo];return o===undefined?3:o;}
+function coberturaDe(consultorId){
+  var t=today(),prox=proximas().filter(function(a){return a.consultorId===consultorId;});
+  if(!prox.length)return null;
+  var a=prox[0],rel=a.relevoId?byId(a.relevoId):null;
+  return {ausencia:a,relevo:rel,dias:diasEntre(t,pd(a.fechaInicio))};
+}
+function renderProyectos(){
+  var todos=DB.proyectos.slice();
+  var filtro=state.pfiltro||"";
+  var ps=(filtro?todos.filter(function(p){return p.portafolio===filtro;}):todos)
+    .sort(function(a,b){return ordenSemaforo(a)-ordenSemaforo(b)||pd(a.fechaHito)-pd(b.fechaHito);});
+  function cuenta(sem){return todos.filter(function(p){return p.semaforo===sem;}).length;}
+  var avg=todos.length?Math.round(todos.reduce(function(s,p){return s+p.avance;},0)/todos.length):0;
+  var chips=['<button class="btn sm'+(filtro?"":" primary")+'" data-pfil="">Todos ('+todos.length+')</button>']
+    .concat(portafolios().map(function(pf){
+      var n=todos.filter(function(p){return p.portafolio===pf;}).length;
+      return '<button class="btn sm'+(filtro===pf?" primary":"")+'" data-pfil="'+esc(pf)+'">'+esc(pf)+' ('+n+')</button>';
+    })).join(" ");
+  var cards=ps.map(function(p){
+    var r=byId(p.respId),cob=r?coberturaDe(r.id):null,S=SEM[p.semaforo];
+    var t=today(),dh=diasEntre(t,pd(p.fechaHito));
+    return '<div class="pcard" data-popen="'+esc(p.id)+'">'+
+      '<div class="ptop"><span class="sem '+p.semaforo+'"></span>'+
+        '<div style="flex:1"><div class="pn">'+esc(p.nombre)+'</div>'+
+        '<div class="ppf">'+esc(p.portafolio)+'</div></div>'+
+        pill(S.pill,S.label)+'</div>'+
+      '<div class="pbar" style="margin:12px 0 4px"><i style="width:'+p.avance+'%"></i></div>'+
+      '<div class="prow2"><span>Avance <b>'+p.avance+'%</b></span><span>CAPEX '+p.capex+'%</span>'+
+        '<span>'+esc(p.presupuesto)+'</span></div>'+
+      '<div class="phito">Próximo hito: <b>'+esc(p.hito)+'</b> · '+fmt(p.fechaHito)+
+        ' <span class="'+(dh<0?"venc":"")+'">('+(dh<0?"vencido":"en "+dh+" días")+')</span></div>'+
+      (p.riesgos.length?'<div class="prie">⚠ '+esc(p.riesgos[0])+(p.riesgos.length>1?' <span class="mini">+'+(p.riesgos.length-1)+' más</span>':'')+'</div>':'')+
+      '<div class="pfoot">'+(r?avatar(r,22)+'<span class="mini">'+esc(r.nombre)+'</span>':'')+
+        (cob&&cob.dias>=0?'<span class="spacer"></span>'+pill(cob.relevo?"warn":"crit",
+          cob.relevo?"Ausente en "+cob.dias+"d · cubre "+cob.relevo.ini:"Ausente en "+cob.dias+"d · sin relevo"):'')+
+      '</div></div>';
+  }).join("");
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>Proyectos y portafolios</h2>'+
+    '<div class="sub">Estado consolidado que alimenta al Asistente PMO</div></div>'+
+    '<div class="spacer"></div><button class="btn primary sm" data-pnew="1">＋ Nuevo proyecto</button></div>'+
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+todos.length+'</div><div class="l">Proyectos activos</div></div>'+
+      '<div class="kpi '+(cuenta("rojo")?"r":"i")+'"><div class="n tnum">'+cuenta("rojo")+'</div><div class="l">En rojo</div></div>'+
+      '<div class="kpi w"><div class="n tnum">'+cuenta("ambar")+'</div><div class="l">En ámbar</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+avg+'%</div><div class="l">Avance promedio</div></div>'+
+    '</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px">'+chips+'</div>'+
+    (cards?'<div class="pgrid">'+cards+'</div>':'<div class="card"><div class="empty"><div class="e-ic">◈</div>Sin proyectos en este portafolio.</div></div>');
+}
+function modalProyecto(id){
+  var p=id?proyecto(id):null, NL=String.fromCharCode(10);
+  var pfOpts=portafolios().map(function(x){
+    return '<option'+(p&&p.portafolio===x?' selected':'')+'>'+esc(x)+'</option>';}).join("");
+  var rOpts=consultores().map(function(c){
+    return '<option value="'+c.id+'"'+(p&&p.respId===c.id?' selected':'')+'>'+esc(c.nombre)+'</option>';}).join("");
+  var semOpts=["verde","ambar","rojo"].map(function(x){
+    return '<option value="'+x+'"'+(p&&p.semaforo===x?' selected':'')+'>'+SEM[x].label+'</option>';}).join("");
+  var r=p?byId(p.respId):null, cob=r?coberturaDe(r.id):null;
+  var aviso="";
+  if(p&&cob&&cob.dias>=0){
+    aviso='<div class="warnbar">'+esc(r.nombre)+' se ausenta en '+cob.dias+' días ('+
+      fmt(cob.ausencia.fechaInicio)+'–'+fmt(cob.ausencia.fechaFin)+'). '+
+      (cob.relevo?'Lo cubre <b>'+esc(cob.relevo.nombre)+'</b>.':'<b>Aún sin relevo asignado.</b>')+'</div>';
+  }
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>'+(p?esc(p.nombre):"Nuevo proyecto")+'</h3>'+
+    '<div class="sub">'+(p?esc(p.id)+' · actualizado '+fmt(p.act):"Añade un proyecto al portafolio")+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+aviso+
+      '<div class="field"><label>Nombre del proyecto</label><input id="p-nom" value="'+esc(p?p.nombre:"")+'"></div>'+
+      '<div class="fgrid">'+
+        '<div class="field"><label>Portafolio</label><select id="p-pf">'+pfOpts+'</select></div>'+
+        '<div class="field"><label>Responsable</label><select id="p-resp">'+rOpts+'</select></div>'+
+      '</div>'+
+      '<div class="fgrid3">'+
+        '<div class="field"><label>Semáforo</label><select id="p-sem">'+semOpts+'</select></div>'+
+        '<div class="field"><label>Avance (%)</label><input type="number" id="p-av" min="0" max="100" value="'+(p?p.avance:0)+'"></div>'+
+        '<div class="field"><label>CAPEX ejecutado (%)</label><input type="number" id="p-cap" min="0" max="100" value="'+(p?p.capex:0)+'"></div>'+
+      '</div>'+
+      '<div class="fgrid">'+
+        '<div class="field"><label>Próximo hito</label><input id="p-hito" value="'+esc(p?p.hito:"")+'"></div>'+
+        '<div class="field"><label>Fecha del hito</label><input type="date" id="p-fh" value="'+(p?p.fechaHito:iso(today()))+'"></div>'+
+      '</div>'+
+      '<div class="field"><label>Presupuesto</label><input id="p-pres" value="'+esc(p?p.presupuesto:"US$ 0.0 M")+'" placeholder="US$ 1.5 M"></div>'+
+      '<div class="field"><label>Riesgos abiertos</label><textarea id="p-rie" placeholder="Un riesgo por línea">'+
+        esc(p?(p.riesgos||[]).join(NL):"")+'</textarea><div class="hint">Un riesgo por línea. El Asistente los usa al responder.</div></div>'+
+      '<p class="note" id="p-err" style="color:var(--crit);display:none"></p>'+
+    '</div>'+
+    '<div class="modal-f">'+(p?'<button class="btn danger left" data-pdel="'+esc(p.id)+'">Eliminar</button>':'')+
+      '<button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-psave="'+(p?esc(p.id):"")+'">'+(p?"Guardar cambios":"Crear proyecto")+'</button>'+
+    '</div></div></div>';
+}
+function guardarProyecto(id){
+  var nom=((document.getElementById("p-nom")||{}).value||"").trim();
+  var err=document.getElementById("p-err");
+  if(!nom){err.textContent="Indica el nombre del proyecto.";err.style.display="block";return;}
+  var NL=String.fromCharCode(10);
+  var lim=function(v){v=parseInt(v,10);if(isNaN(v))v=0;return Math.max(0,Math.min(100,v));};
+  var obj={
+    id:id||("P-"+String(DB.proyectos.length+1+Math.floor(Math.random()*90))),
+    nombre:nom,
+    portafolio:document.getElementById("p-pf").value,
+    respId:document.getElementById("p-resp").value,
+    semaforo:document.getElementById("p-sem").value,
+    avance:lim(document.getElementById("p-av").value),
+    capex:lim(document.getElementById("p-cap").value),
+    hito:((document.getElementById("p-hito")||{}).value||"").trim(),
+    fechaHito:document.getElementById("p-fh").value||iso(today()),
+    presupuesto:((document.getElementById("p-pres")||{}).value||"").trim(),
+    riesgos:((document.getElementById("p-rie")||{}).value||"").split(NL).map(function(x){return x.trim();}).filter(Boolean),
+    act:iso(today())};
+  var found=false;
+  for(var i=0;i<DB.proyectos.length;i++)if(DB.proyectos[i].id===obj.id){DB.proyectos[i]=obj;found=true;}
+  if(!found)DB.proyectos.push(obj);
+  save();state.modal=null;toast(found?"Proyecto actualizado":"Proyecto creado");render();
+}
+function borrarProyecto(id){
+  DB.proyectos=DB.proyectos.filter(function(p){return p.id!==id;});
+  save();state.modal=null;toast("Proyecto eliminado");render();
+}
 /* ============ PERSISTENCIA DE MINUTAS ============ */
 function guardarMinutaObj(obj,esEdicion){
   var found=false;
@@ -1614,6 +1863,7 @@ function renderModal(){
   else if(m.type==="mform")root.innerHTML=modalMinutaForm(m.id);
   else if(m.type==="tview")root.innerHTML=modalTransView(m.id);
   else if(m.type==="tform")root.innerHTML=modalTransForm();
+  else if(m.type==="proy")root.innerHTML=modalProyecto(m.id);
 }
 
 /* ============ render ============ */
@@ -1621,6 +1871,7 @@ function render(){
   renderTools();
   if(state.tool==="hub")document.getElementById("view").innerHTML=hubHTML();
   else if(state.tool==="vacaciones")renderVacaciones();
+  else if(state.tool==="proyectos")renderProyectos();
   else if(state.tool==="minutas")renderMinutas();
   else if(state.tool==="transcripciones")renderTranscripciones();
   else if(state.tool==="asistente")renderAsistente();
@@ -1646,7 +1897,9 @@ document.addEventListener("click",function(e){
   var sel="[data-tool],[data-vtab],[data-open],[data-close],[data-save],[data-del],[data-edit],[data-cyc],[data-chk],"+
           "[data-genacc],[data-genchk],[data-saverel],[data-year],[data-anew],[data-mnew],[data-mopen],[data-medit],"+
           "[data-mdel],[data-msave],[data-mcopy],[data-mdown],[data-ccyc],[data-ask],[data-send],[data-mai],"+
-          "[data-tnew],[data-topen],[data-tsave],[data-tdel],[data-tmin],[data-mtab],[data-buscar],[data-hit]";
+          "[data-tnew],[data-topen],[data-tsave],[data-tdel],[data-tmin],[data-mtab],[data-buscar],[data-hit],"+
+          "[data-pnew],[data-popen],[data-psave],[data-pdel],[data-pfil],"+
+          "[data-cfil],[data-cexp],[data-mcarry],[data-mmail]";
   var el=e.target.closest(sel);
   if(!el)return;
   var d=el.dataset;
@@ -1686,6 +1939,15 @@ document.addEventListener("click",function(e){
     if(API.on)apiPost("/api/minutas/eliminar",{id:d.mdel}).then(refrescarStats).catch(function(){});
     state.modal=null;toast("Minuta eliminada");render();return;}
   if(el.hasAttribute("data-msave")){saveMinuta(el.getAttribute("data-msave")||null);return;}
+  if(el.hasAttribute("data-cfil")){state.cfiltro=el.getAttribute("data-cfil");render();return;}
+  if(d.cexp!=null){exportarCompromisosCSV();return;}
+  if(d.mcarry!=null){traerAcuerdosAbiertos();return;}
+  if(d.mmail){correoMinuta(d.mmail);return;}
+  if(d.pnew!=null){state.modal={type:"proy",id:null};renderModal();return;}
+  if(d.popen){state.modal={type:"proy",id:d.popen};renderModal();return;}
+  if(el.hasAttribute("data-psave")){guardarProyecto(el.getAttribute("data-psave")||null);return;}
+  if(d.pdel){borrarProyecto(d.pdel);return;}
+  if(el.hasAttribute("data-pfil")){state.pfiltro=el.getAttribute("data-pfil");render();return;}
   if(d.tnew!=null){state.modal={type:"tform"};renderModal();return;}
   if(d.topen){abrirTranscripcion(d.topen);return;}
   if(d.tsave!=null){guardarTranscripcion();return;}
@@ -1709,6 +1971,11 @@ document.addEventListener("click",function(e){
   if(d.ask){preguntar(d.ask);return;}
   if(d.send!=null){var inp=document.getElementById("ai-input");if(inp){preguntar(inp.value);}return;}
 });
+document.addEventListener("change",function(e){
+  if(e.target&&e.target.hasAttribute&&e.target.hasAttribute("data-cresp")){
+    state.cresp=e.target.value;render();
+  }
+});
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"&&state.modal){state.modal=null;render();return;}
   if(e.key==="Enter"&&e.target&&e.target.id==="ai-input"){preguntar(e.target.value);}
@@ -1726,6 +1993,9 @@ if(typeof global!=="undefined"){global.__T={seed:seed,responder:responder,chkPct
   mdToHtml:mdToHtml,contextoPMO:contextoPMO,buildMessages:buildMessages,
   buscarLocal:buscarLocal,textoDeMinuta:textoDeMinuta,seedTranscripciones:seedTranscripciones,
   seccionIA:seccionIA,aplicarIaMinuta:aplicarIaMinuta,
+  proyecto:proyecto,coberturaDe:coberturaDe,todosLosCompromisos:todosLosCompromisos,
+  compromisosHTML:compromisosHTML,traerAcuerdosAbiertos:traerAcuerdosAbiertos,
+  actaTexto:actaTexto,minuta:minuta,
   fuentesHTML:fuentesHTML,extractoHtml:extractoHtml,fragsDe:fragsDe,
   setAPI:function(v){API.on=v;},setLLM:function(v){LLM.on=v;}};}
 })();

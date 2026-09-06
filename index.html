@@ -335,6 +335,41 @@
   .prie{font-size:12px;color:var(--warn);margin-top:7px;background:var(--warn-soft);
     padding:6px 9px;border-radius:8px}
   .pfoot{display:flex;align-items:center;gap:7px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+  .alertbtn{position:relative}
+  .abadge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;
+    font-size:10px;font-weight:800;font-style:normal;display:grid;place-items:center;color:#fff;padding:0 4px}
+  .abadge.crit{background:var(--crit)} .abadge.warn{background:var(--warn)} .abadge.vacio{display:none}
+  .alerta{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border:1px solid var(--line);
+    border-radius:11px;margin-bottom:8px;cursor:pointer;background:var(--surface)}
+  .alerta:hover{border-color:var(--brand)}
+  .alerta.crit{border-left:3px solid var(--crit)}
+  .alerta.warn{border-left:3px solid var(--warn)}
+  .alerta .aic{font-size:17px}
+  .alerta .atit{font-weight:650;font-size:13.5px}
+  .alerta .adet{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .tablero{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+  .tb-head{display:flex;align-items:flex-start;gap:14px;padding-bottom:14px;margin-bottom:18px;
+    border-bottom:2px solid var(--brand)}
+  .tb-t{font-size:19px;font-weight:750;letter-spacing:-.02em}
+  .tb-s{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .tb-logo{margin-left:auto;font-weight:750;color:var(--brand);font-size:14px;white-space:nowrap}
+  .tb-sec{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--copper);
+    font-weight:750;margin:20px 0 9px}
+  .tb-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.tb-cols{grid-template-columns:1fr}}
+  .tb-pie{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:11px;color:var(--muted);text-align:center}
+  .hitorow{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .hitorow:last-child{border-bottom:none}
+  .hitorow .sem{margin-top:5px}
+  @media print{
+    .appbar,.noprint,.toast,#modalRoot{display:none!important}
+    .wrap{background:#fff!important}
+    main{padding:0!important}
+    .tablero{border:none!important;box-shadow:none!important;padding:0!important}
+    .card{break-inside:avoid;box-shadow:none!important}
+    .tb-cols{grid-template-columns:1fr 1fr!important}
+  }
 </style>
 
 <div class="wrap">
@@ -350,6 +385,7 @@
       </button>
       <nav class="tools" id="tools"></nav>
       <div class="spacer"></div>
+      <button class="icon-btn alertbtn" data-alertas="1" title="Centro de alertas" aria-label="Alertas">🔔<i id="alertCount" class="abadge vacio"></i></button>
       <button class="icon-btn" id="btnReset" title="Restaurar datos de ejemplo" aria-label="Restaurar datos de ejemplo">↺</button>
       <button class="icon-btn" id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
@@ -494,9 +530,23 @@ function seed(){
        {id:uid("cp"),desc:"Enviar plan de despliegue fase 1",responsable:"Marco Antón",fecha:dRel(-5),estado:"hecho"}],
      notas:""}
   ];
-  return {consultores:C,ausencias:A,proyectos:P,minutas:M,transcripciones:seedTranscripciones(),cfg:{ventana:30,umbral:90},v:2};
+  return {consultores:C,ausencias:A,proyectos:P,minutas:M,transcripciones:seedTranscripciones(),interesados:seedInteresados(),cfg:{ventana:30,umbral:90},v:2};
 }
 
+function seedInteresados(){
+  return {
+    "Operaciones Mina":[{n:"Ana Quispe",c:"ana.quispe@ejemplo.com",r:"Consultor PMO"},
+                        {n:"Superintendencia Mina",c:"mina@ejemplo.com",r:"Cliente"}],
+    "Planta Concentradora":[{n:"Diego Salazar",c:"diego.salazar@ejemplo.com",r:"Consultor PMO"},
+                        {n:"J. Ramos",c:"j.ramos@ejemplo.com",r:"Superintendente de Planta"}],
+    "Sostenibilidad & MA":[{n:"Carla Ninanya",c:"carla.ninanya@ejemplo.com",r:"Consultor PMO"},
+                        {n:"R. Vega",c:"r.vega@ejemplo.com",r:"Comunidades"}],
+    "Mant. & Confiabilidad":[{n:"Luis Ramírez",c:"luis.ramirez@ejemplo.com",r:"Consultor PMO"}],
+    "Proy. Reposición Antamina":[{n:"Rosa Huamán",c:"rosa.huaman@ejemplo.com",r:"Consultor PMO"}],
+    "Transformación Digital / TI":[{n:"Marco Antón",c:"marco.anton@ejemplo.com",r:"Consultor PMO"},
+                        {n:"P. Cruz",c:"p.cruz@ejemplo.com",r:"TI Antamina"}]
+  };
+}
 function seedTranscripciones(){
   var Y=today().getFullYear(), NL=String.fromCharCode(10);
   function t(id,titulo,fecha,pf,part,origen,texto){
@@ -540,7 +590,7 @@ function seedTranscripciones(){
 /* ============ persistence ============ */
 var KEY="suite-pmo-antamina-v1";
 var DB;
-function load(){try{var r=localStorage.getItem(KEY);if(r){DB=JSON.parse(r);if(!DB.transcripciones)DB.transcripciones=seedTranscripciones();return;}}catch(e){}DB=seed();save();}
+function load(){try{var r=localStorage.getItem(KEY);if(r){DB=JSON.parse(r);if(!DB.transcripciones)DB.transcripciones=seedTranscripciones();if(!DB.interesados)DB.interesados=seedInteresados();return;}}catch(e){}DB=seed();save();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
 function reset(){DB=seed();save();}
 
@@ -581,6 +631,7 @@ function pill(cls,label){return '<span class="pill '+cls+'"><span class="d"></sp
 var TOOLS=[
   {k:"hub",ic:"⌂",label:"Inicio"},
   {k:"vacaciones",ic:"🗓",label:"Relevo·PMO"},
+  {k:"tablero",ic:"▣",label:"Tablero"},
   {k:"proyectos",ic:"◈",label:"Proyectos"},
   {k:"minutas",ic:"📝",label:"Minutas"},
   {k:"transcripciones",ic:"🎙",label:"Transcripciones"},
@@ -607,6 +658,9 @@ function hubHTML(){
      d:"Actas con agenda, acuerdos y compromisos. Guardadas en base de datos y consultables como fuente histórica.",
      stats:[pill("copper",DB.minutas.length+" actas"),pill(abiertos?"warn":"ok",abiertos+" compromisos abiertos"),
             pill(API.on?"info":"muted",API.on?"Base de datos":"Local")]},
+    {tool:"tablero",color:"var(--deep)",ic:"▣",t:"Tablero ejecutivo",
+     d:"Vista de una página para el comité: estado por portafolio, hitos, riesgos y cobertura. Imprimible a PDF.",
+     stats:[pill("muted","Para el cliente"),pill("info","Exporta CSV / PDF")]},
     {tool:"proyectos",color:"#9B7B1E",ic:"◈",t:"Proyectos y portafolios",
      d:"Estado consolidado de los proyectos: semáforo, avance, hitos, riesgos y CAPEX, con aviso de cobertura por ausencias.",
      stats:[pill("info",DB.proyectos.length+" proyectos"),
@@ -780,7 +834,8 @@ function renderMinutas(){
     '<div class="spacer"></div>'+
     (API.on?'<span class="dbchip">🗄️ Base de datos · '+((API.stats&&API.stats.minutas)||DB.minutas.length)+' actas</span>'
            :'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
-    '<button class="btn primary sm" data-mnew="1" style="margin-left:10px">＋ Nueva minuta</button></div>'+
+    '<button class="btn sm" data-inter="1" style="margin-left:10px">👥 Interesados</button>'+
+    '<button class="btn primary sm" data-mnew="1" style="margin-left:8px">＋ Nueva minuta</button></div>'+
     '<div class="subtabs">'+
       '<button data-mtab="lista" class="'+(state.mtab==="lista"||!state.mtab?"active":"")+'">Minutas</button>'+
       '<button data-mtab="compromisos" class="'+(state.mtab==="compromisos"?"active":"")+'">✓ Compromisos</button>'+
@@ -972,9 +1027,223 @@ function traerAcuerdosAbiertos(){
 function correoMinuta(id){
   var m=minuta(id); if(!m)return;
   var NL=String.fromCharCode(13)+String.fromCharCode(10);
-  var eml=["To: ","Subject: Minuta - "+m.titulo+" ("+fmtL(m.fecha)+")","X-Unsent: 1",
+  var dest=correosDe(m.portafolio);
+  var eml=["To: "+dest.join(", "),"Subject: Minuta - "+m.titulo+" ("+fmtL(m.fecha)+")","X-Unsent: 1",
     "Content-Type: text/plain; charset=utf-8","",actaTexto(m)].join(NL);
   descargarTexto("Minuta_"+String(m.id)+".eml",eml,"message/rfc822");
+  if(!dest.length)toast("Acta lista. Sin interesados en este portafolio: añádelos con el botón Interesados.");
+}
+
+/* ============ TABLERO EJECUTIVO (cliente) ============ */
+function resumenPortafolio(pf){
+  var ps=DB.proyectos.filter(function(p){return p.portafolio===pf;});
+  var r=consultores().filter(function(c){return c.portafolio===pf;})[0];
+  var peor="verde";
+  ps.forEach(function(p){if(p.semaforo==="rojo")peor="rojo";else if(p.semaforo==="ambar"&&peor!=="rojo")peor="ambar";});
+  var av=ps.length?Math.round(ps.reduce(function(a,p){return a+p.avance;},0)/ps.length):0;
+  var ries=ps.reduce(function(a,p){return a+p.riesgos.length;},0);
+  var cob=r?coberturaDe(r.id):null;
+  return {pf:pf,ps:ps,resp:r,peor:peor,avance:av,riesgos:ries,cobertura:cob};
+}
+function renderTablero(){
+  var t=today(), rs=portafolios().map(resumenPortafolio);
+  var todos=DB.proyectos;
+  function cuenta(sem){return todos.filter(function(p){return p.semaforo===sem;}).length;}
+  var avg=todos.length?Math.round(todos.reduce(function(a,p){return a+p.avance;},0)/todos.length):0;
+  var comp=todosLosCompromisos();
+  var abiertos=comp.filter(function(x){return x.c.estado!=="hecho";}).length;
+  var vencidos=comp.filter(function(x){return x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t;}).length;
+  var sinRelevo=proximas().filter(function(a){return estadoRelevo(a).k==="sinrelevo";}).length;
+
+  var filas=rs.map(function(x){
+    var S=SEM[x.peor];
+    return '<tr><td><b>'+esc(x.pf)+'</b></td>'+
+      '<td>'+(x.resp?esc(x.resp.nombre):"—")+'</td>'+
+      '<td class="tnum">'+x.ps.length+'</td>'+
+      '<td>'+pill(S.pill,S.label)+'</td>'+
+      '<td style="min-width:130px"><div class="pbar" style="margin:0"><i style="width:'+x.avance+'%"></i></div>'+
+        '<span class="mini tnum">'+x.avance+'%</span></td>'+
+      '<td class="tnum">'+x.riesgos+'</td>'+
+      '<td>'+(x.cobertura&&x.cobertura.dias>=0
+        ? (x.cobertura.relevo?pill("ok","Cubierto · "+esc(x.cobertura.relevo.ini)):pill("crit","Sin relevo"))
+        : pill("muted","Sin ausencias"))+'</td></tr>';
+  }).join("");
+
+  var hitos=todos.slice().filter(function(p){return pd(p.fechaHito)>=t;})
+    .sort(function(a,b){return pd(a.fechaHito)-pd(b.fechaHito);}).slice(0,6)
+    .map(function(p){
+      var d=diasEntre(t,pd(p.fechaHito));
+      return '<div class="hitorow"><span class="sem '+p.semaforo+'"></span>'+
+        '<div style="flex:1"><b>'+esc(p.hito)+'</b><div class="mini">'+esc(p.nombre)+'</div></div>'+
+        '<div class="mini tnum" style="text-align:right">'+fmt(p.fechaHito)+'<div>en '+d+' días</div></div></div>';
+    }).join("");
+
+  var riesgos=[];
+  todos.forEach(function(p){p.riesgos.forEach(function(r){riesgos.push({p:p,r:r});});});
+  riesgos.sort(function(a,b){return ordenSemaforo(a.p)-ordenSemaforo(b.p);});
+  var listaR=riesgos.slice(0,6).map(function(x){
+    return '<div class="hitorow"><span class="sem '+x.p.semaforo+'"></span>'+
+      '<div style="flex:1">'+esc(x.r)+'<div class="mini">'+esc(x.p.nombre)+'</div></div></div>';}).join("");
+
+  document.getElementById("view").innerHTML=
+    '<div class="page-head noprint"><div><h2>Tablero ejecutivo</h2>'+
+    '<div class="sub">Vista de una página para el comité · corte al '+fmtL(iso(t))+'</div></div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn sm" data-texp="1">⬇ CSV</button>'+
+    '<button class="btn primary sm" data-print="1" style="margin-left:8px">🖨 Imprimir / PDF</button></div>'+
+    '<div class="tablero">'+
+    '<div class="tb-head"><div><div class="tb-t">PMO Antamina · Estado de portafolios</div>'+
+      '<div class="tb-s">Corte al '+fmtL(iso(t))+' · '+consultores().length+' consultores · '+portafolios().length+' portafolios</div></div>'+
+      '<div class="tb-logo">◭ Relevo·PMO</div></div>'+
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+todos.length+'</div><div class="l">Proyectos</div></div>'+
+      '<div class="kpi '+(cuenta("rojo")?"r":"i")+'"><div class="n tnum">'+cuenta("rojo")+'</div><div class="l">En rojo</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+avg+'%</div><div class="l">Avance promedio</div></div>'+
+      '<div class="kpi '+(vencidos?"r":"w")+'"><div class="n tnum">'+abiertos+'</div><div class="l">Compromisos abiertos'+
+        (vencidos?" ("+vencidos+" vencidos)":"")+'</div></div>'+
+    '</div>'+
+    (sinRelevo?'<div class="warnbar">⚠ '+sinRelevo+' ausencia(s) próxima(s) sin relevo asignado.</div>':'')+
+    '<div class="tb-sec">Estado por portafolio</div>'+
+    '<div class="card"><div class="scrollx"><table class="tbl">'+
+    '<thead><tr><th>Portafolio</th><th>Consultor</th><th>Proy.</th><th>Estado</th><th>Avance</th><th>Riesgos</th><th>Cobertura</th></tr></thead>'+
+    '<tbody>'+filas+'</tbody></table></div></div>'+
+    '<div class="tb-cols">'+
+      '<div><div class="tb-sec">Próximos hitos</div><div class="card"><div class="card-b">'+
+        (hitos||'<div class="mini">Sin hitos próximos.</div>')+'</div></div></div>'+
+      '<div><div class="tb-sec">Riesgos principales</div><div class="card"><div class="card-b">'+
+        (listaR||'<div class="mini">Sin riesgos abiertos.</div>')+'</div></div></div>'+
+    '</div>'+
+    '<div class="tb-pie">Generado por Relevo·PMO — Suite PMO Antamina · '+fmtL(iso(t))+'</div>'+
+    '</div>';
+}
+function exportarTableroCSV(){
+  var NL=String.fromCharCode(10);
+  var q=function(v){return '"'+String(v==null?"":v).split('"').join('""')+'"';};
+  var L=[["Portafolio","Consultor","Proyectos","Estado","Avance %","Riesgos","Cobertura"].map(q).join(";")];
+  portafolios().map(resumenPortafolio).forEach(function(x){
+    L.push([x.pf,x.resp?x.resp.nombre:"",x.ps.length,SEM[x.peor].label,x.avance,x.riesgos,
+      x.cobertura&&x.cobertura.dias>=0?(x.cobertura.relevo?"Cubierto por "+x.cobertura.relevo.nombre:"SIN RELEVO"):"Sin ausencias"
+    ].map(q).join(";"));
+  });
+  descargarTexto("tablero-pmo-antamina.csv",L.join(NL),"text/csv;charset=utf-8");
+}
+
+/* ============ CENTRO DE ALERTAS (T-30 / T-15 / T-7) ============ */
+function hitoAviso(d){return d<=7?"T-7":(d<=15?"T-15":(d<=30?"T-30":null));}
+function alertas(){
+  var t=today(), out=[];
+  proximas().forEach(function(a){
+    var c=byId(a.consultorId), d=diasEntre(t,pd(a.fechaInicio)), st=estadoRelevo(a);
+    if(d<0)return;
+    var h=hitoAviso(d); if(!h)return;
+    if(st.k==="sinrelevo"){
+      out.push({sev:"crit",ic:"⚠",h:h,tit:c.nombre+" sin relevo asignado",
+        det:TIPOS[a.tipo].label+" · inicia en "+d+" días ("+fmt(a.fechaInicio)+")",tool:"vacaciones",id:a.id});
+      return;
+    }
+    if(st.k==="ligera")return;
+    if(a.accesos&&a.accesos.length&&!accesosOk(a))
+      out.push({sev:d<=7?"crit":"warn",ic:"🔑",h:h,tit:"Accesos pendientes · relevo de "+c.nombre,
+        det:accesosOtorgados(a)+" de "+a.accesos.length+" otorgados · inicia en "+d+" días",tool:"vacaciones",id:a.id});
+    if(chkPct(a)<DB.cfg.umbral)
+      out.push({sev:d<=7?"crit":"warn",ic:"📋",h:h,tit:"Traspaso incompleto · "+c.nombre,
+        det:chkPct(a)+"% de "+DB.cfg.umbral+"% requerido · inicia en "+d+" días",tool:"vacaciones",id:a.id});
+  });
+  todosLosCompromisos().forEach(function(x){
+    if(x.c.estado!=="hecho"&&x.c.fecha&&pd(x.c.fecha)<t)
+      out.push({sev:"crit",ic:"📌",h:"Vencido",tit:"Compromiso vencido: "+x.c.desc,
+        det:(x.c.responsable||"sin responsable")+" · venció "+fmt(x.c.fecha),tool:"minutas",mtab:"compromisos"});
+  });
+  DB.proyectos.forEach(function(p){
+    if(p.semaforo==="rojo")
+      out.push({sev:"crit",ic:"◈",h:"Rojo",tit:"Proyecto en rojo: "+p.nombre,
+        det:p.riesgos[0]||"Sin riesgo registrado",tool:"proyectos",id:p.id});
+    var dh=diasEntre(t,pd(p.fechaHito));
+    if(dh<0)out.push({sev:"warn",ic:"🏁",h:"Vencido",tit:"Hito vencido: "+p.hito,
+      det:p.nombre+" · "+Math.abs(dh)+" días de retraso",tool:"proyectos",id:p.id});
+    else if(dh<=7)out.push({sev:"warn",ic:"🏁",h:"T-7",tit:"Hito esta semana: "+p.hito,
+      det:p.nombre+" · en "+dh+" días",tool:"proyectos",id:p.id});
+  });
+  var ord={crit:0,warn:1,info:2};
+  function peso(x){var v=ord[x.sev];return v===undefined?9:v;}
+  return out.sort(function(a,b){return peso(a)-peso(b);});
+}
+function pintarContadorAlertas(){
+  var el=document.getElementById("alertCount"); if(!el)return;
+  var a=alertas(), cr=a.filter(function(x){return x.sev==="crit";}).length;
+  el.textContent=a.length?String(a.length):"";
+  el.className=a.length?(cr?"abadge crit":"abadge warn"):"abadge vacio";
+}
+function modalAlertas(){
+  var a=alertas();
+  var filas=a.map(function(x,i){
+    return '<div class="alerta '+x.sev+'" data-airA="'+i+'">'+
+      '<span class="aic">'+x.ic+'</span>'+
+      '<div style="flex:1"><div class="atit">'+esc(x.tit)+'</div>'+
+      '<div class="adet">'+esc(x.det)+'</div></div>'+
+      pill(x.sev==="crit"?"crit":"warn",x.h)+'</div>';
+  }).join("");
+  state._alertas=a;
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>Centro de alertas</h3>'+
+    '<div class="sub">Avisos automáticos a T-30, T-15 y T-7 días · '+a.length+' abierta(s)</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+(filas||'<div class="empty"><div class="e-ic">✅</div>Todo en orden: sin alertas abiertas.</div>')+
+    '<p class="note">Clic en una alerta para ir al detalle.</p></div>'+
+    '<div class="modal-f"><button class="btn primary" data-close="1">Cerrar</button></div></div></div>';
+}
+function irAlerta(i){
+  var x=(state._alertas||[])[i]; if(!x)return;
+  state.modal=null; state.tool=x.tool;
+  if(x.mtab)state.mtab=x.mtab;
+  if(x.tool==="vacaciones"){state.vtab="panel";render();state.modal={type:"detail",id:x.id};renderModal();return;}
+  if(x.tool==="proyectos"&&x.id){render();state.modal={type:"proy",id:x.id};renderModal();return;}
+  render();
+}
+
+/* ============ INTERESADOS POR PORTAFOLIO ============ */
+function interesadosDe(pf){return (DB.interesados&&DB.interesados[pf])||[];}
+function correosDe(pf){return interesadosDe(pf).map(function(x){return x.c;}).filter(Boolean);}
+function parseInteresados(txt){
+  var NL=String.fromCharCode(10);
+  return String(txt||"").split(NL).map(function(l){return l.trim();}).filter(Boolean).map(function(l){
+    var nombre=l, correo="", rol="";
+    var a=l.indexOf("<"), b=l.indexOf(">");
+    if(a>=0&&b>a){nombre=l.slice(0,a).trim();correo=l.slice(a+1,b).trim();rol=l.slice(b+1).replace("-","").trim();}
+    else if(l.indexOf("@")>=0){
+      var partes=l.split(";");
+      if(partes.length>1){nombre=partes[0].trim();correo=partes[1].trim();}
+      else{correo=l.trim();nombre=l.split("@")[0].trim();}
+    }
+    return {n:nombre,c:correo,r:rol};
+  }).filter(function(x){return x.n||x.c;});
+}
+function modalInteresados(){
+  var NL=String.fromCharCode(10);
+  var bloques=portafolios().map(function(pf,i){
+    var txt=interesadosDe(pf).map(function(x){
+      return x.n+(x.c?" <"+x.c+">":"")+(x.r?" - "+x.r:"");}).join(NL);
+    return '<div class="field"><label>'+esc(pf)+'</label>'+
+      '<textarea id="int-'+i+'" data-pf="'+esc(pf)+'" style="min-height:70px">'+esc(txt)+'</textarea></div>';
+  }).join("");
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>Interesados por portafolio</h3>'+
+    '<div class="sub">Destinatarios que se cargan al enviar un acta por correo</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<p class="note" style="margin-bottom:14px">Un interesado por línea, con el formato: '+
+      '<b>Nombre &lt;correo@dominio.com&gt; - Rol</b></p>'+bloques+
+    '</div>'+
+    '<div class="modal-f"><button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-isave="1">Guardar interesados</button></div></div></div>';
+}
+function guardarInteresados(){
+  var pfs=portafolios(), mapa={};
+  for(var i=0;i<pfs.length;i++){
+    var el=document.getElementById("int-"+i);
+    mapa[pfs[i]]=el?parseInteresados(el.value):[];
+  }
+  DB.interesados=mapa;save();state.modal=null;toast("Interesados actualizados");render();
 }
 
 /* ============ COMPROMISOS CONSOLIDADOS ============ */
@@ -1292,6 +1561,58 @@ function resultadosHTML(){
     }).join("");
 }
 
+/* ============ IMPORTAR VTT DE TEAMS ============ */
+function esIdentificadorCue(L){
+  // Teams nombra los bloques con identificadores tipo "b1f2...-3": sin espacios y largos
+  if(L.indexOf(" ")>=0)return false;
+  if(L.length<20)return false;
+  return L.indexOf("-")>0;
+}
+function soloDigitos(L){
+  for(var i=0;i<L.length;i++){var c=L.charAt(i);if(c<"0"||c>"9")return false;}
+  return L.length>0;
+}
+function parseVTT(txt){
+  var NL=String.fromCharCode(10), CR=String.fromCharCode(13);
+  var lineas=String(txt||"").split(NL).map(function(l){return l.split(CR).join("").trim();});
+  var out=[], ultimo="";
+  for(var i=0;i<lineas.length;i++){
+    var L=lineas[i];
+    if(!L)continue;
+    if(L.indexOf("WEBVTT")===0)continue;
+    if(L.indexOf("NOTE")===0)continue;
+    if(L.indexOf("-->")>0)continue;
+    if(soloDigitos(L))continue;
+    if(esIdentificadorCue(L))continue;
+    var hablante="", texto=L;
+    if(L.indexOf("<v ")===0){
+      var b=L.indexOf(">");
+      if(b>0){hablante=L.substring(3,b).trim();texto=L.substring(b+1);}
+      var c=texto.indexOf("</v>");
+      if(c>=0)texto=texto.substring(0,c);
+    }
+    texto=texto.trim();
+    if(!texto)continue;
+    if(hablante){
+      if(hablante===ultimo&&out.length)out[out.length-1]+=" "+texto;
+      else{out.push(hablante+": "+texto);ultimo=hablante;}
+    }else{
+      if(out.length&&ultimo)out[out.length-1]+=" "+texto;
+      else{out.push(texto);ultimo="";}
+    }
+  }
+  return out.join(NL);
+}
+function participantesDeVTT(texto){
+  var NL=String.fromCharCode(10), vistos=[];
+  String(texto||"").split(NL).forEach(function(l){
+    var i=l.indexOf(":");
+    if(i>0&&i<45){var nom=l.slice(0,i).trim();
+      if(nom&&nom.indexOf(" ")<25&&vistos.indexOf(nom)<0)vistos.push(nom);}
+  });
+  return vistos.slice(0,10).join(", ");
+}
+
 /* ============ TRANSCRIPCIONES ============ */
 function transcripcion(id){var ts=DB.transcripciones||[];for(var i=0;i<ts.length;i++)if(ts[i].id===id)return ts[i];return null;}
 function fragsDe(t){return t.fragmentos||Math.max(1,Math.ceil(((t.texto||"").length)/900));}
@@ -1367,8 +1688,14 @@ function modalTransForm(){
         '<div class="field"><label>Origen</label><select id="t-org"><option>Teams</option><option>Presencial</option><option>Zoom</option><option>Notas manuales</option></select></div>'+
       '</div>'+
       '<div class="field"><label>Participantes</label><input id="t-par" placeholder="Nombres separados por coma"></div>'+
-      '<div class="field"><label>Transcripción</label><textarea id="t-txt" style="min-height:220px" placeholder="Pega aquí la transcripción completa de la reunión…"></textarea>'+
-      '<div class="hint">Puede ser la transcripción automática de Teams. Se divide en fragmentos para poder buscarla.</div></div>'+
+      '<div class="field"><label>Transcripción</label>'+
+      '<div style="display:flex;gap:9px;align-items:center;margin-bottom:8px;flex-wrap:wrap">'+
+        '<label class="btn sm" style="cursor:pointer;margin:0">📄 Importar .vtt de Teams'+
+        '<input type="file" id="t-file" accept=".vtt,.txt" style="display:none"></label>'+
+        '<span class="aihint" id="t-fileinfo" style="margin:0">Descarga la transcripción desde Teams y súbela aquí; se limpian marcas de tiempo automáticamente.</span>'+
+      '</div>'+
+      '<textarea id="t-txt" style="min-height:220px" placeholder="Pega aquí la transcripción, o impórtala desde un archivo .vtt de Teams…"></textarea>'+
+      '<div class="hint">Se divide en fragmentos para poder buscarla y para que el Asistente la use.</div></div>'+
       '<p class="note" id="t-err" style="color:var(--crit);display:none"></p>'+
     '</div>'+
     '<div class="modal-f"><button class="btn" data-close="1">Cancelar</button>'+
@@ -1864,6 +2191,8 @@ function renderModal(){
   else if(m.type==="tview")root.innerHTML=modalTransView(m.id);
   else if(m.type==="tform")root.innerHTML=modalTransForm();
   else if(m.type==="proy")root.innerHTML=modalProyecto(m.id);
+  else if(m.type==="alertas")root.innerHTML=modalAlertas();
+  else if(m.type==="inter")root.innerHTML=modalInteresados();
 }
 
 /* ============ render ============ */
@@ -1871,11 +2200,13 @@ function render(){
   renderTools();
   if(state.tool==="hub")document.getElementById("view").innerHTML=hubHTML();
   else if(state.tool==="vacaciones")renderVacaciones();
+  else if(state.tool==="tablero")renderTablero();
   else if(state.tool==="proyectos")renderProyectos();
   else if(state.tool==="minutas")renderMinutas();
   else if(state.tool==="transcripciones")renderTranscripciones();
   else if(state.tool==="asistente")renderAsistente();
   renderModal();
+  pintarContadorAlertas();
 }
 
 /* ============ toast ============ */
@@ -1899,7 +2230,8 @@ document.addEventListener("click",function(e){
           "[data-mdel],[data-msave],[data-mcopy],[data-mdown],[data-ccyc],[data-ask],[data-send],[data-mai],"+
           "[data-tnew],[data-topen],[data-tsave],[data-tdel],[data-tmin],[data-mtab],[data-buscar],[data-hit],"+
           "[data-pnew],[data-popen],[data-psave],[data-pdel],[data-pfil],"+
-          "[data-cfil],[data-cexp],[data-mcarry],[data-mmail]";
+          "[data-cfil],[data-cexp],[data-mcarry],[data-mmail],"+
+          "[data-alertas],[data-airA],[data-isave],[data-inter],[data-print],[data-texp]";
   var el=e.target.closest(sel);
   if(!el)return;
   var d=el.dataset;
@@ -1939,6 +2271,12 @@ document.addEventListener("click",function(e){
     if(API.on)apiPost("/api/minutas/eliminar",{id:d.mdel}).then(refrescarStats).catch(function(){});
     state.modal=null;toast("Minuta eliminada");render();return;}
   if(el.hasAttribute("data-msave")){saveMinuta(el.getAttribute("data-msave")||null);return;}
+  if(d.alertas!=null){state.modal={type:"alertas"};renderModal();return;}
+  if(el.hasAttribute("data-airA")){irAlerta(parseInt(el.getAttribute("data-airA"),10));return;}
+  if(d.inter!=null){state.modal={type:"inter"};renderModal();return;}
+  if(d.isave!=null){guardarInteresados();return;}
+  if(d.print!=null){try{window.print();}catch(e){toast("Usa Ctrl+P para imprimir");}return;}
+  if(d.texp!=null){exportarTableroCSV();return;}
   if(el.hasAttribute("data-cfil")){state.cfiltro=el.getAttribute("data-cfil");render();return;}
   if(d.cexp!=null){exportarCompromisosCSV();return;}
   if(d.mcarry!=null){traerAcuerdosAbiertos();return;}
@@ -1973,7 +2311,24 @@ document.addEventListener("click",function(e){
 });
 document.addEventListener("change",function(e){
   if(e.target&&e.target.hasAttribute&&e.target.hasAttribute("data-cresp")){
-    state.cresp=e.target.value;render();
+    state.cresp=e.target.value;render();return;
+  }
+  if(e.target&&e.target.id==="t-file"&&e.target.files&&e.target.files[0]){
+    var arch=e.target.files[0], lector=new FileReader();
+    lector.onload=function(){
+      var crudo=String(lector.result||"");
+      var limpio=crudo.indexOf("WEBVTT")>=0?parseVTT(crudo):crudo;
+      var campo=document.getElementById("t-txt");
+      if(campo)campo.value=limpio;
+      var tit=document.getElementById("t-tit");
+      if(tit&&!tit.value)tit.value=arch.name.split(".")[0].split("_").join(" ");
+      var par=document.getElementById("t-par");
+      if(par&&!par.value)par.value=participantesDeVTT(limpio);
+      var info=document.getElementById("t-fileinfo");
+      if(info)info.textContent=arch.name+" · "+Math.round(limpio.length/1000)+" mil caracteres listos";
+      toast("Transcripción importada y limpiada");
+    };
+    lector.readAsText(arch,"utf-8");
   }
 });
 document.addEventListener("keydown",function(e){
@@ -1994,6 +2349,8 @@ if(typeof global!=="undefined"){global.__T={seed:seed,responder:responder,chkPct
   buscarLocal:buscarLocal,textoDeMinuta:textoDeMinuta,seedTranscripciones:seedTranscripciones,
   seccionIA:seccionIA,aplicarIaMinuta:aplicarIaMinuta,
   proyecto:proyecto,coberturaDe:coberturaDe,todosLosCompromisos:todosLosCompromisos,
+  alertas:alertas,hitoAviso:hitoAviso,parseVTT:parseVTT,participantesDeVTT:participantesDeVTT,
+  parseInteresados:parseInteresados,correosDe:correosDe,resumenPortafolio:resumenPortafolio,
   compromisosHTML:compromisosHTML,traerAcuerdosAbiertos:traerAcuerdosAbiertos,
   actaTexto:actaTexto,minuta:minuta,
   fuentesHTML:fuentesHTML,extractoHtml:extractoHtml,fragsDe:fragsDe,

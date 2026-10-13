@@ -1908,7 +1908,7 @@ function responder(q){
   if(/como van|resumen|general|todos|estado|proyecto|portafolio/.test(nq))return ansResumen();
   return ansFallback();
 }
-var PROXY_URL="";
+var PROXY_URL="https://pmo-antamina-api.minsait-business-consulting-pe.workers.dev";
 var LLM={on:false,chatUrl:null,model:null,mode:null};
 var API={on:false,stats:null};
 function apiGet(p){return fetch(p).then(function(r){if(!r.ok)throw new Error("http");return r.json();});}
